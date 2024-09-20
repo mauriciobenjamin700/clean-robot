@@ -1,0 +1,3 @@
+SIZE = 20
+FAMILY = "Inknut Antiqua"
+PLACEHOLDER = "#D9D7D7"
