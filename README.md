@@ -10,6 +10,11 @@
 
 ## Dependências para Linux Ubuntu
 
+
+```bash
+sudo apt-get install python3-tk
+```
+
 ```bash
 sudo apt update
 
