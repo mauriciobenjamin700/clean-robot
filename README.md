@@ -42,3 +42,7 @@ flet run [app_directory]
 ```bash
 flet run --web test.py
 ```
+
+## Documentação
+
+[Flet](https://flet.dev/docs/getting-started/adaptive-apps)

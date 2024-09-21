@@ -1,3 +1,10 @@
+# Makefile
+
+VENV_DIR = .venv
+PYTHON = $(VENV_DIR)/bin/python
+
+.PHONY: run
+
 run:
-	@poetry shell
-	@flet run main.py
+	@echo "Ativando o ambiente virtual e executando o script..."
+	. $(VENV_DIR)/bin/activate && $(PYTHON) main.py

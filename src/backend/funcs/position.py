@@ -18,6 +18,7 @@ def generate_position(board:list[list]) -> tuple[int, int]:
         y = gerenate_random_number(0, height - 1)
         
         return x, y
+
     
 def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) -> bool:
     
@@ -44,6 +45,7 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
         else:
             raise ValueError("Tipo inválido")
     return result
+
 
 def get_robot_position(board:list[list]) -> tuple[int, int]:
     
