@@ -1,5 +1,8 @@
 # home_screen.py
 from customtkinter import CTkFrame
+
+
+
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
 from src.frontend.styles.colors.page import SCREEN
@@ -10,12 +13,11 @@ class HomeScreen(CTkFrame):
         super().__init__(master)
         self.master = master
 
+        self.configure(fg_color=SCREEN)
+
         self.central_frame = CentralFrame(self)
         self.central_frame.pack()
-        self.master.update_idletasks()
-        #center_window(self.master)
         
-
         self.entry_frame = CTkFrame(self, fg_color=SCREEN)
         self.entry_frame.pack(side="right", anchor="e", padx=10, pady=10)
 
@@ -24,3 +26,5 @@ class HomeScreen(CTkFrame):
 
         self.entry_HEIGHT = Entry(self.entry_frame, placeholder_text="Colunas")
         self.entry_HEIGHT.pack(padx=10, pady=5)
+
+

@@ -41,7 +41,6 @@ class Entry(CTkEntry):
             **kwargs
         )
 
-        # Set placeholder text
         #self.placeholder_text = kwargs.get("placeholder_text", "")
         self._placeholder_text = placeholder_text
         self.insert(0, self._placeholder_text)
@@ -50,6 +49,19 @@ class Entry(CTkEntry):
         self.bind("<FocusIn>", self._on_focus_in)
         self.bind("<FocusOut>", self._on_focus_out)
 
+
+        self._add_validation()
+
+    def get(self):
+        value = super().get()
+        try:
+            if not value:
+                return 0
+
+            return int(value)
+        except:
+            return 0
+
     def _on_focus_in(self, event):
         if self.get() == self._placeholder_text:
             self.delete(0, "end")
@@ -57,3 +69,14 @@ class Entry(CTkEntry):
     def _on_focus_out(self, event):
         if self.get() == "":
             self.insert(0, self._placeholder_text)
+
+    def _add_validation(self):
+        vcmd = (self.register(self._validate), '%P')
+        self.configure(validate="key", validatecommand=vcmd)
+
+    def _validate(self, value_if_allowed):
+        if value_if_allowed.isdigit() or value_if_allowed == "":
+            return True
+        else:
+            return False
+        

@@ -1,6 +1,11 @@
 from customtkinter import CTk, CTkFrame
 
 
+from tkinter.messagebox import (
+    showinfo,
+    showerror,
+    showwarning
+)
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
 from src.frontend.styles.colors.page import SCREEN
@@ -19,36 +24,53 @@ class App(CTk):
         self.title("My APP")
 
         self.configure(fg_color=SCREEN)
-        
+
         center_window(self)
 
-        self.central_frame = CentralFrame(self)
+        self.resizable(False, False)
 
-        self.central_frame.pack()
-        
-        self.update_idletasks()
-        
-        align_frame_center(self, self.central_frame)
+        self.home = HomeScreen(self)
 
-        self.entry_frame = CTkFrame(self, fg_color=SCREEN)
-        self.entry_frame.pack(side="right", anchor="e", padx=10, pady=10)
+        self._show_screen(self.home)
 
-        self.entry_WIDTH = Entry(self.entry_frame, placeholder_text="Linhas")
-        self.entry_WIDTH.pack(padx=10, pady=5)
+        #self.home.pack(expand=True, fill="both")
 
-        self.entry_HEIGHT = Entry(self.entry_frame, placeholder_text="Colun")
-        self.entry_HEIGHT.pack(padx=10, pady=5)
+        #align_frame_center(self, self.home.central_frame)
+
+        #align_frame_center(self, self.central_frame)
 
 
         # Bind click event to the root window
         self.bind("<Button-1>", self.on_click)
+
+        self.home.central_frame.button_right.bind("<Button-1>", self.board_screen)
+
+    def board_screen(self, event):
+        width = self.home.entry_WIDTH.get()
+        height = self.home.entry_HEIGHT.get()
+
+        if width and height:
+            showinfo("Info", f"Width: {width}, Height: {height}")
+        else:
+            showerror("Aviso","Invalid input")
 
     def on_click(self, event):
         # Set focus to the root window when clicking outside the entry
         if event.widget == self:
             self.focus_set()
 
+    def _show_screen(self, screen):
+        screen.pack(expand=True, fill="both")
+        align_frame_center(self, screen.central_frame)
+        screen.tkraise()
+
+    def _forget_screen(self, screen):
+        screen.forget()
+
+
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+    #self.overrideredirect(True)
+    #self.update_idletasks()

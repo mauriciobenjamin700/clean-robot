@@ -29,12 +29,12 @@ class CentralFrame(ctk.CTkFrame):
         #align_frame_center(self, self.inner_frame)
 
         # Create button frame to hold buttons
-        self.button_frame = ctk.CTkFrame(self, fg_color=WINDOW)
-        self.button_frame.pack(expand=True)
+        self.frame_button = ctk.CTkFrame(self, fg_color=WINDOW)
+        self.frame_button.pack(expand=True)
 
         # Create buttons inside button frame
-        self.button1 = Button(self.button_frame, text="Button 1")
-        self.button1.pack(side="left", padx=10, pady=10)
+        self.button_left = Button(self.frame_button, text="Button 1")
+        self.button_left.pack(side="left", padx=10, pady=10)
 
-        self.button2 = Button(self.button_frame, text="Button 2")
-        self.button2.pack(side="left", padx=10, pady=10)
+        self.button_right = Button(self.frame_button, text="Button 2")
+        self.button_right.pack(side="left", padx=10, pady=10)
