@@ -1,4 +1,4 @@
-VOID = 0
+CLEAN = 0
 TRASH = 1
 OBSTACLE = 7
 ROBOT = 8
