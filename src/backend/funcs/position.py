@@ -4,7 +4,7 @@ from typing import Literal
 from src.backend.constants.main import (
     OBSTACLE,
     ROBOT,
-    VOID
+    CLEAN
 )
 from src.backend.funcs.base import gerenate_random_number
 
@@ -91,7 +91,15 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         
     else:
         board[x][y] = ROBOT
-        board[oldx][oldy] = VOID
+        board[oldx][oldy] = CLEAN
         print("\nRobô movido com sucesso")
         
     return result
+
+def can_clean(board: list[list[int]], x:int, y:int) -> bool:
+    """
+    Calcula se as novas coordenadas (x, y) estão dentro dos limites do tabuleiro, não são obstáculos e não estão limpas.
+    """
+    if 0 <= x < len(board) and 0 <= y < len(board[0]) and board[x][y] != OBSTACLE and board[x][y] != CLEAN:
+        return True
+    return False
