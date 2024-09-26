@@ -23,60 +23,66 @@ class Entry(CTkEntry):
     def __init__(
             self, 
             master=None,
-            placeholder_text:str="Placeholder",
+            placeholder_text: str = "Placeholder",
             **kwargs
         ):
         super().__init__(
             master,
             fg_color=BACKGROUND,
-            text_color=TEXT_COLOR,
+            text_color=PLACEHOLDER,  # Inicialmente, a cor do texto é a cor do placeholder
             font=TEXT_STYLE,
             corner_radius=BODER_RADIUS,
             border_color=BORDER_COLOR,
             border_width=BORDER_WIDTH,
-            placeholder_text_color=PLACEHOLDER,
             justify=ENTRY_JUSTIFY,
             height=ENTRY_HEIGHT,
             width=ENTRY_WIDTH,
+            placeholder_text=placeholder_text,
             **kwargs
         )
 
-        #self.placeholder_text = kwargs.get("placeholder_text", "")
-        self._placeholder_text = placeholder_text
-        self.insert(0, self._placeholder_text)
+        self.placeholder = placeholder_text
 
         # Bind events
         self.bind("<FocusIn>", self._on_focus_in)
         self.bind("<FocusOut>", self._on_focus_out)
 
-
-        self._add_validation()
-
     def get(self):
         value = super().get()
-        try:
-            if not value:
-                return 0
 
-            return int(value)
-        except:
-            return 0
+        if not value:
+            value = self.placeholder
+
+        return value
+
+            
+    def get_int(self):
+        value = self.get()
+
+        if value.isnumeric():
+            value.replace(" ", "").replace(",", ".")
+            if "." in value:
+                return float(value)
+            else:
+                return int(value)
+        else:
+            raise ValueError("Insira números")
 
     def _on_focus_in(self, event):
-        if self.get() == self._placeholder_text:
+        value = self.get()
+        print(f'_on_focus_in: {value}')
+        if value == self.placeholder:
             self.delete(0, "end")
+            self.configure(text_color=TEXT_COLOR)  # Ajuste a cor do texto para a cor normal
 
     def _on_focus_out(self, event):
-        if self.get() == "":
+        value = self.get()
+        print(f'_on_focus_out: {value}')
+        if self.get() == self.placeholder:
             self.insert(0, self._placeholder_text)
+            self.configure(text_color=PLACEHOLDER)  # Ajuste a cor do texto para a cor do placeholder
 
-    def _add_validation(self):
-        vcmd = (self.register(self._validate), '%P')
-        self.configure(validate="key", validatecommand=vcmd)
-
-    def _validate(self, value_if_allowed):
-        if value_if_allowed.isdigit() or value_if_allowed == "":
-            return True
-        else:
-            return False
-        
+    def clean(self):
+        self.delete(0, "end")
+        self.insert(0, self.placeholder)
+        self.configure(text_color=PLACEHOLDER)  # Ajuste a cor do texto para a cor do placeholder
