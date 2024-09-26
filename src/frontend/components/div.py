@@ -1,7 +1,7 @@
-import customtkinter as ctk
+from customtkinter import CTkFrame
 from numpy import pad
 
-from src.frontend.styles.colors.page import WINDOW
+from src.frontend.styles.colors.page import SCREEN, WINDOW
 from src.frontend.styles.configs.size import(
     CENTRAL_FRAME_WIDTH,
     CENTRAL_FRAME_HEIGHT,
@@ -12,10 +12,11 @@ from src.frontend.styles.configs.position import(
     align_frame_center
 )
 from src.frontend.components.button import Button
-class CentralFrame(ctk.CTkFrame):
-    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2",border_frame: ctk.CTkFrame = None):
-        super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT)
 
+
+class CentralFrame(CTkFrame):
+    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2"):
+        super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT)
 
         # Desativar a propagação do tamanho
         self.pack_propagate(False)
@@ -23,16 +24,11 @@ class CentralFrame(ctk.CTkFrame):
         self.configure(fg_color=WINDOW)
 
         # Create inner frame
-        if not border_frame:
-            self.inner_frame = ctk.CTkFrame(self, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT)
-        else: self.inner_frame = border_frame
-        
-        self.inner_frame.pack(expand=True,fill="both", padx=10, pady=10)
-
-        #align_frame_center(self, self.inner_frame)
+        self.inner_frame = CTkFrame(self, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT, fg_color=SCREEN)
+        self.inner_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
         # Create button frame to hold buttons
-        self.frame_button = ctk.CTkFrame(self, fg_color=WINDOW)
+        self.frame_button = CTkFrame(self, fg_color=WINDOW)
         self.frame_button.pack(expand=True)
 
         # Create buttons inside button frame
@@ -43,6 +39,10 @@ class CentralFrame(ctk.CTkFrame):
         self.button_right.pack(side="left", padx=10, pady=10)
 
         self.bind("<Button-1>", self.on_click)
+
+
+
+
 
     def on_click(self, event):
         if event.widget == self:

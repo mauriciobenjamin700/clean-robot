@@ -64,7 +64,10 @@ class App(CTk):
             showwarning("Aviso", "Insira apenas números inteiros na altura")
 
         else:
-            self.board = BoardScreen(self)
+            try:
+                self._show_screen(self.board)
+            except:
+                self.board = BoardScreen(self)
             self._show_screen(self.board)
             self._forget_screen(self.home)
             align_frame_right(self, self.board.entry_frame)

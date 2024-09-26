@@ -15,7 +15,6 @@ class HomeScreen(CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-
         self.configure(fg_color=SCREEN)
 
         self.central_frame = CentralFrame(self, "Sair", "Gerar Tabuleiro")

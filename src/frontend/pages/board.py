@@ -5,19 +5,20 @@ from customtkinter import CTkFrame
 
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
-from src.frontend.components.board import ChessBoardFrame, generate_chess_board
+from src.frontend.components.board import BorderFrame, ChessBoardFrame, generate_chess_board
 from src.frontend.styles.colors.page import SCREEN
 from src.frontend.styles.configs.position import center_window, align_frame_center
 
 class BoardScreen(CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.master = master
 
+        self.master = master
         self.configure(fg_color=SCREEN)
-        border = ChessBoardFrame(self, generate_chess_board())
-        self.central_frame = CentralFrame(self, "Voltar", "Gerar Obstáculos")
-        self.central_frame.inner_frame.pack(expand=True, padx=10, pady=10)
+
+        border = generate_chess_board()
+        #border = None
+        self.central_frame = BorderFrame(self, "Voltar", "Gerar Obstáculos",border)
         self.central_frame.pack()
         
         self.entry_frame = CTkFrame(self, fg_color=SCREEN)
