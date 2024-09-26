@@ -70,14 +70,11 @@ class Entry(CTkEntry):
 
     def _on_focus_in(self, event):
         value = self.get()
-        print(f'_on_focus_in: {value}')
         if value == self.placeholder:
             self.delete(0, "end")
             self.configure(text_color=TEXT_COLOR)  # Ajuste a cor do texto para a cor normal
 
     def _on_focus_out(self, event):
-        value = self.get()
-        print(f'_on_focus_out: {value}')
         if self.get() == self.placeholder:
             self.delete(0, "end")
             self.insert(0, self._placeholder_text)

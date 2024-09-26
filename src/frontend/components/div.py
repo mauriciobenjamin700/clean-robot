@@ -13,8 +13,8 @@ from src.frontend.styles.configs.position import(
 )
 from src.frontend.components.button import Button
 class CentralFrame(ctk.CTkFrame):
-    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2",**kwargs):
-        super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT, **kwargs)
+    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2",border_frame: ctk.CTkFrame = None):
+        super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT)
 
 
         # Desativar a propagação do tamanho
@@ -23,8 +23,11 @@ class CentralFrame(ctk.CTkFrame):
         self.configure(fg_color=WINDOW)
 
         # Create inner frame
-        self.inner_frame = ctk.CTkFrame(self, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT)
-        self.inner_frame.pack(expand=True, padx=10, pady=10)
+        if not border_frame:
+            self.inner_frame = ctk.CTkFrame(self, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT)
+        else: self.inner_frame = border_frame
+        
+        self.inner_frame.pack(expand=True,fill="both", padx=10, pady=10)
 
         #align_frame_center(self, self.inner_frame)
 
@@ -38,7 +41,7 @@ class CentralFrame(ctk.CTkFrame):
 
         self.button_right = Button(self.frame_button, text=name_button_right)
         self.button_right.pack(side="left", padx=10, pady=10)
-        
+
         self.bind("<Button-1>", self.on_click)
 
     def on_click(self, event):

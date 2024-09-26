@@ -66,7 +66,6 @@ class App(CTk):
         else:
             self.board = BoardScreen(self)
             self._show_screen(self.board)
-            self._clear_entries(self.home.entry_frame)
             self._forget_screen(self.home)
             align_frame_right(self, self.board.entry_frame)
             align_frame_center(self, self.board.central_frame)
@@ -76,9 +75,7 @@ class App(CTk):
         self._show_screen(self.home)
         self._forget_screen(self.board)
         align_frame_center(self, self.home.central_frame)
-        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)
-        self._clear_entries(self.board.entry_frame)
-            
+        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)            
 
 
     def on_click(self, event):
@@ -105,10 +102,6 @@ class App(CTk):
         
         return False
     
-    def _clear_entries(self, frame):
-        for widget in frame.winfo_children():
-            if isinstance(widget, Entry):
-                widget.clean() # Ajuste a cor do texto para a cor do placehold
 
     def _exit(self, event):
         self.quit()
