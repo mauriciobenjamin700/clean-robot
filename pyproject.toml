@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sistemas-inteligentes"
+name = "sistemas-inteligente"
 version = "0.1.0"
 description = ""
 authors = ["Mauricio Benjamin <mauriciobenjamin700@gmail.com>"]

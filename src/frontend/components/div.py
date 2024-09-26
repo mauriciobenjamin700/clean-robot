@@ -13,7 +13,7 @@ from src.frontend.styles.configs.position import(
 )
 from src.frontend.components.button import Button
 class CentralFrame(ctk.CTkFrame):
-    def __init__(self, master=None, **kwargs):
+    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2",**kwargs):
         super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT, **kwargs)
 
 
@@ -33,8 +33,14 @@ class CentralFrame(ctk.CTkFrame):
         self.frame_button.pack(expand=True)
 
         # Create buttons inside button frame
-        self.button_left = Button(self.frame_button, text="Button 1")
+        self.button_left = Button(self.frame_button, text=name_button_left)
         self.button_left.pack(side="left", padx=10, pady=10)
 
-        self.button_right = Button(self.frame_button, text="Button 2")
+        self.button_right = Button(self.frame_button, text=name_button_right)
         self.button_right.pack(side="left", padx=10, pady=10)
+        
+        self.bind("<Button-1>", self.on_click)
+
+    def on_click(self, event):
+        if event.widget == self:
+            self.focus_set()

@@ -45,7 +45,9 @@ class App(CTk):
         # Bind click event to the root window
         self.bind("<Button-1>", self.on_click)
 
+        self.home.central_frame.button_left.bind("<Button-1>", self._exit)
         self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)
+
 
     def home_to_board(self, event):
         width = self.home.entry_WIDTH.get()
@@ -55,7 +57,7 @@ class App(CTk):
         if not width or not height:
             showerror("Erro", "Preencha todos os campos")
 
-        if not self._valid_numbers(width):
+        elif not self._valid_numbers(width):
             showwarning("Aviso", "Insira apenas números inteiros na largura")
 
         elif not self._valid_numbers(height):
@@ -106,7 +108,11 @@ class App(CTk):
     def _clear_entries(self, frame):
         for widget in frame.winfo_children():
             if isinstance(widget, Entry):
-                widget.clean() # Ajuste a cor do texto para a cor do placeholder
+                widget.clean() # Ajuste a cor do texto para a cor do placehold
+
+    def _exit(self, event):
+        self.quit()
+        self.destroy()
 
 
 

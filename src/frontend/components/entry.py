@@ -47,10 +47,10 @@ class Entry(CTkEntry):
         self.bind("<FocusIn>", self._on_focus_in)
         self.bind("<FocusOut>", self._on_focus_out)
 
-    def get(self):
-        value = super().get()
+    def get(self) -> str:
+        value = super().get().strip()
 
-        if not value:
+        if not value or len(value) == 0:
             value = self.placeholder
 
         return value
@@ -79,6 +79,7 @@ class Entry(CTkEntry):
         value = self.get()
         print(f'_on_focus_out: {value}')
         if self.get() == self.placeholder:
+            self.delete(0, "end")
             self.insert(0, self._placeholder_text)
             self.configure(text_color=PLACEHOLDER)  # Ajuste a cor do texto para a cor do placeholder
 
@@ -86,3 +87,8 @@ class Entry(CTkEntry):
         self.delete(0, "end")
         self.insert(0, self.placeholder)
         self.configure(text_color=PLACEHOLDER)  # Ajuste a cor do texto para a cor do placeholder
+        self.refrash()
+
+
+    def refrash(self):
+        self.update_idletasks()
