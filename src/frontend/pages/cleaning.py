@@ -25,6 +25,8 @@ class CleaningScreen(CTkFrame):
         self.configure(fg_color=SCREEN)
         if not border:
             border = generate_chess_board()
+
+        self.board = border
         
         #border = None
         self.central_frame = BorderFrame(self, "Voltar", "Iniciar Limpeza",border)
@@ -41,13 +43,14 @@ class CleaningScreen(CTkFrame):
 
 
 
-"""
 
-    def start_cleaning(self, event):
+
+    def start_cleaning(self, event=None):
         # Exemplo de movimentação do robô para a posição (5, 5)
-        robot = get_robot_position(self.board)
-        if make_move(self.board,robot):
+        
+        if make_move(self.board):
             print("irei mover")
+            robot = get_robot_position(self.board)
             label = self.central_frame.inner_frame.get_label(robot[0], robot[1])
             self.animate_movement(label)
 
@@ -69,4 +72,3 @@ class CleaningScreen(CTkFrame):
             sleep(0.1)  # Delay para simular a animação
 
         print("Animando movimentação do robô...")
-"""

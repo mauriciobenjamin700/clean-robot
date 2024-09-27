@@ -187,7 +187,7 @@ class App(CTk):
         self.robot_screen.central_frame.button_right.bind("<Button-1>", self.robot_to_clean)
 
     def start_cleaning(self, event):
-        print("Iniciando limpeza")
+        self.cleaning_screen.start_cleaning()
     
 
 

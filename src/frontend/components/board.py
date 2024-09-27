@@ -33,17 +33,20 @@ class ChessBoardFrame(CTkFrame):
         super().__init__(master, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT, fg_color=SCREEN)
         self.obstacle = Image.open("images/obstacle.png")
         self.robot = Image.open("images/robot.png")
+        self.list_of_labels = []
 
         self.create_board(board)
 
     def create_board(self, board):
-        
+                    
 
         lines = len(board)
 
         columns = len(board[0])
 
         for i in range(lines):
+
+            array = []
 
             self.grid_rowconfigure(i, weight=1)
 
@@ -54,6 +57,14 @@ class ChessBoardFrame(CTkFrame):
                 cell = self._choice_item(board[i][j], board)
 
                 cell.grid(row=i, column=j, padx=1, pady=1, sticky="nsew")
+
+                array.append(cell)
+            
+            self.list_of_labels.append(array)
+
+    
+    def get_label(self, x, y):
+        return self.list_of_labels[x][y]
 
     def regenerate_board(self, new_board):
         # Destruir o tabuleiro atual

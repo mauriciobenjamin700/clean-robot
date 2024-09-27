@@ -1,3 +1,4 @@
+from re import M
 from typing import Literal
 
 
@@ -5,7 +6,8 @@ from src.backend.constants.main import (
     OBSTACLE,
     ROBOT,
     CLEAN,
-    TRASH
+    TRASH,
+    MOVES
 )
 from src.backend.funcs.base import gerenate_random_number
 
@@ -73,10 +75,23 @@ def remove_robot(board:list[list[int]]) -> bool:
     except:
         return False
 
-def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
-    
+def can_move(board:list[list[int]], x:int, y:int) -> bool:
     width = len(board)
     height = len(board[0])
+
+    if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
+        print("\nPosição inválida")
+        return False
+    
+    elif board[x][y] == OBSTACLE:
+        print("\nJá existe um obstáculo nessa posição")
+        return  False
+    
+    return True
+
+def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
+    
+
     
     result = True
     
@@ -93,15 +108,11 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         y -= 1
     else:
         return False
-    
-    if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
-        print("\nPosição inválida")
-        result = False
-    
-    elif board[x][y] == OBSTACLE:
-        print("\nJá existe um obstáculo nessa posição")
-        result = False
-        
+
+
+    if not can_move(board, x, y):
+        return False
+
     else:
         board[x][y] = ROBOT
         board[oldx][oldy] = CLEAN
@@ -109,8 +120,21 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         
     return result
 
-def make_move():
-    pass
+def new_robot_positon(robot: tuple[int, int], direction: tuple[int, int]) -> tuple[int, int]:
+    
+    return robot[0] + direction[0], robot[1] + direction[1]
+
+def make_move(board):
+    
+    robot = get_robot_position(board)
+
+    for direcion, position in MOVES.items():
+        
+        x, y =new_robot_positon(robot, position)
+
+        if can_move(board, x, y):
+            move(board, robot[0], robot[1], direcion)
+            return True
 
 def can_clean(board: list[list[int]], x:int, y:int) -> bool:
     """
