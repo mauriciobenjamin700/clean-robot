@@ -92,7 +92,7 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
     elif direction == "left":
         y -= 1
     else:
-        raise print("Direção inválida")
+        return False
     
     if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
         print("\nPosição inválida")
@@ -108,6 +108,9 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         print("\nRobô movido com sucesso")
         
     return result
+
+def make_move():
+    pass
 
 def can_clean(board: list[list[int]], x:int, y:int) -> bool:
     """

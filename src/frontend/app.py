@@ -54,7 +54,7 @@ class App(CTk):
         self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)
 
 
-    def home_to_board(self, event):
+    def home_to_board(self, event=None):
         width = self.home.entry_WIDTH.get()
         height = self.home.entry_HEIGHT.get()
 
@@ -93,7 +93,7 @@ class App(CTk):
         align_frame_center(self, self.home.central_frame)
         self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)       
 
-    def place_obstacles(self, event):
+    def place_obstacles(self, event=None):
         # Place obstacles in the board
         num_obstacles = self.board_screen.entry_quantity.get().strip()
 
@@ -116,12 +116,12 @@ class App(CTk):
             except ValueError:
                 showerror("Erro", "Número de obstáculos inválido")
 
-    def boarder_to_robot(self):
+    def boarder_to_robot(self, event=None):
         # Método para transitar para a tela do robô
         try:
             if hasattr(self, 'robot_screen'):
                 remove_robot(self.board)
-                self.board_screen.destroy()
+                self.robot_screen.destroy()
         except Exception as e:
                 print(f"Erro ao destruir o tabuleiro: {e}")
         self.robot_screen = RobotScreen(self, self.board)
@@ -131,15 +131,18 @@ class App(CTk):
 
 
     def robot_to_board(self, event):
-        if not hasattr(self, 'board_screen'):
+        if hasattr(self, 'board_screen'):
+            self.board_screen.destroy()
+            self.board = generate_board(len(self.board), len(self.board[0]))
             self.board_screen = BoardScreen(self, self.board)
+        
 
         self._show_screen(self.board_screen)
         self._forget_screen(self.robot_screen)
         align_frame_center(self, self.board_screen.central_frame)
         self.board_screen.central_frame.button_right.unbind()
-        self.board_screen.central_frame.button_right.bind("<Button-1>", self.boarder_to_robot)
-        self.board_screen.central_frame.button_right.configure(text="Gerar Robô")
+        self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_obstacles)
+        self.board_screen.central_frame.button_right.configure(text="Gerar Obstáculos")
         self.robot_screen.central_frame.button_left.unbind()
         self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
 
