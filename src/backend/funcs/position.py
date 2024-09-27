@@ -4,7 +4,8 @@ from typing import Literal
 from src.backend.constants.main import (
     OBSTACLE,
     ROBOT,
-    CLEAN
+    CLEAN,
+    TRASH
 )
 from src.backend.funcs.base import gerenate_random_number
 
@@ -59,6 +60,18 @@ def get_robot_position(board:list[list]) -> tuple[int, int]:
             
     raise ValueError("Robô não encontrado")
 
+
+def remove_robot(board:list[list[int]]) -> bool:
+
+    try:
+        robot = get_robot_position(board)
+
+        board[robot[0]][robot[1]] = TRASH
+
+        return True
+    
+    except:
+        return False
 
 def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
     

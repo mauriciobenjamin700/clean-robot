@@ -13,12 +13,7 @@ from src.backend.constants.main import(
     OBSTACLE,
     ROBOT
 )
-from src.backend.funcs.board import (
-    generate_board,
-    place,
-    generate_position,
-    generate_obstacles
-)
+
 
 def generate_chess_board(lines:int=8, columns=8):
     board = []
@@ -45,12 +40,19 @@ class ChessBoardFrame(CTkFrame):
         
 
         lines = len(board)
+
         columns = len(board[0])
+
         for i in range(lines):
+
             self.grid_rowconfigure(i, weight=1)
+
             for j in range(columns):
+
                 self.grid_columnconfigure(j, weight=1)
+
                 cell = self._choice_item(board[i][j], board)
+
                 cell.grid(row=i, column=j, padx=1, pady=1, sticky="nsew")
 
     def regenerate_board(self, new_board):
@@ -63,11 +65,12 @@ class ChessBoardFrame(CTkFrame):
         self.create_board(new_board)
 
 
-    def _choice_item(self, item: int, board: list[list[int]]):
-        width = self.winfo_width() // len(board[0])  # Largura da label
-        height = self.winfo_height() // len(board)  # Altura da label
+    def _choice_item(self, item: int, board: list[list[int]]) -> CTkLabel:
 
-        def resize_image(image, width, height):
+        width = max(30, int(self.winfo_width() // len(board[0])))  # Largura da label
+        height = max(30, int(self.winfo_height() // len(board)))  # Altura da label
+
+        def resize_image(image, width, height) -> CTkImage:
             resized_image = image.resize((width, height), Image.LANCZOS)
             return CTkImage(light_image=resized_image, dark_image=resized_image)
 

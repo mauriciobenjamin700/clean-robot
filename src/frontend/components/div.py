@@ -1,5 +1,5 @@
 from customtkinter import CTkFrame
-from numpy import pad
+
 
 from src.frontend.styles.colors.page import SCREEN, WINDOW
 from src.frontend.styles.configs.size import(
@@ -7,9 +7,6 @@ from src.frontend.styles.configs.size import(
     CENTRAL_FRAME_HEIGHT,
     INTERNAL_FRAME_WIDTH,
     INTERNAL_FRAME_HEIGHT,
-)
-from src.frontend.styles.configs.position import(
-    align_frame_center
 )
 from src.frontend.components.button import Button
 

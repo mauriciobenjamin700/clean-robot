@@ -1,4 +1,4 @@
-from customtkinter import CTk, CTkFrame
+from customtkinter import CTk
 
 
 from tkinter.messagebox import (
@@ -6,19 +6,23 @@ from tkinter.messagebox import (
     showerror,
     showwarning
 )
-from src.backend.funcs.board import generate_board, generate_obstacles
-from src.frontend.styles.colors.entry import PLACEHOLDER
-from src.frontend.components.div import CentralFrame
-from src.frontend.components.entry import Entry
-from src.frontend.styles.colors.page import SCREEN
+
+from src.backend.funcs.board import (
+    generate_board, 
+    generate_obstacles
+)
 from src.frontend.pages.home import HomeScreen
 from src.frontend.pages.board import BoardScreen
-
+from src.frontend.pages.robot import RobotScreen
+from src.frontend.styles.colors.page import SCREEN
 from src.frontend.styles.configs.position import (
     center_window,
     align_frame_center,
     align_frame_right
 )
+
+
+from src.backend.funcs.position import remove_robot
 
 class App(CTk):
     def __init__(self):
@@ -66,7 +70,7 @@ class App(CTk):
 
         else:
             try:
-                if hasattr(self, 'board'):
+                if hasattr(self, 'board_screen'):
                     self.board_screen.destroy()
             except Exception as e:
                 print(f"Erro ao destruir o tabuleiro: {e}")
@@ -102,10 +106,33 @@ class App(CTk):
                 if num_obstacles > 0:
                     generate_obstacles(self.board, num_obstacles)
                     self.board_screen.central_frame.inner_frame.regenerate_board(self.board)
+                    #self.place_robot()
                 else:
                     showerror("Erro", "Número de obstáculos inválido")
             except ValueError:
                 showerror("Erro", "Número de obstáculos inválido")     
+
+    def place_robot(self, event=None):
+        try:
+            if hasattr(self, 'robot_screen'):
+                remove_robot(self.board)
+                self.robot_screen.destroy()
+        except Exception as e:
+            print(f"Erro ao destruir a tela do robô: {e}")
+
+        self.robot_screen = RobotScreen(self, self.board)
+        self._show_screen(self.robot_screen)
+        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+
+
+    def robot_to_board(self, event):
+        self._show_screen(self.board_screen)
+        self._forget_screen(self.robot_screen)
+        align_frame_center(self, self.board_screen.central_frame)
+        self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_robot)
+        self.board_screen.central_frame.button_right.configure(text="Gerar Robô")
+
+    
 
 
     def on_click(self, event):

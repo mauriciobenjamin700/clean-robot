@@ -25,3 +25,4 @@ def generate_obstacles(board:list[list], num_blocks:int) -> None:
         
         while not place(board, x, y, 'obstacle'):
             x, y = generate_position(board)
+

@@ -7,10 +7,7 @@ from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
 from src.frontend.styles.colors.label import TEXT, TEXT_STYLE
 from src.frontend.styles.colors.page import SCREEN
-from src.frontend.styles.configs.position import (
-    center_window, 
-    align_frame_center
-)
+
 
 class HomeScreen(CTkFrame):
     def __init__(self, master):
