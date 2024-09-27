@@ -125,9 +125,10 @@ class App(CTk):
         except Exception as e:
                 print(f"Erro ao destruir o tabuleiro: {e}")
         self.robot_screen = RobotScreen(self, self.board)
-        self.robot_screen.pack(fill="both", expand=True)
+        self._show_screen(self.robot_screen)
         self.board_screen.pack_forget()
         self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+        self.robot_screen.central_frame.button_right.bind("<Button-1>", self.place_robot)
 
 
     def robot_to_board(self, event):
@@ -145,6 +146,13 @@ class App(CTk):
         self.board_screen.central_frame.button_right.configure(text="Gerar Obstáculos")
         self.robot_screen.central_frame.button_left.unbind()
         self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+
+
+    def place_robot(self, event):
+        if hasattr(self, 'robot_screen'):
+            remove_robot(self.board)
+
+        self.robot_screen.add_robot()
 
     
 
