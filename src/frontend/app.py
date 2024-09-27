@@ -14,6 +14,7 @@ from src.backend.funcs.board import (
 from src.frontend.pages.home import HomeScreen
 from src.frontend.pages.board import BoardScreen
 from src.frontend.pages.robot import RobotScreen
+from src.frontend.pages.cleaning import CleaningScreen
 from src.frontend.styles.colors.page import SCREEN
 from src.frontend.styles.configs.position import (
     center_window,
@@ -153,7 +154,40 @@ class App(CTk):
             remove_robot(self.board)
 
         self.robot_screen.add_robot()
+        # self.robot_screen.central_frame.button_right.unbind()
+        # self.robot_screen.central_frame.button_right.bind("<Button-1>", self.robot_to_clean)
+        # self.robot_screen.central_frame.button_right.configure(text="Inciar")
+        self.robot_screen.central_frame.button_left.unbind()
+        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+        self.robot_to_clean()
 
+
+    def robot_to_clean(self, event=None):
+        if hasattr(self, 'cleaning_screen'):
+            self.cleaning_screen.destroy()
+        self._forget_screen(self.robot_screen)
+        self.cleaning_screen = CleaningScreen(self, self.board)
+        self.robot_screen.central_frame.button_left.unbind()
+        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.cleaning_to_robot)
+        self._show_screen(self.cleaning_screen)
+        self.robot_screen.central_frame.button_right.bind("<Button-1>", self.start_cleaning)
+        self.robot_screen.central_frame.button_right.configure(text="Avançar")
+        self.cleaning_screen.central_frame.button_left.bind("<Button-1>", self.cleaning_to_robot)
+        self.cleaning_screen.central_frame.button_right.bind("<Button-1>", self.start_cleaning)
+
+
+    def cleaning_to_robot(self, event):
+        if not hasattr(self, 'robot_screen'):
+            self.robot_screen = RobotScreen(self, self.board)
+        self._show_screen(self.robot_screen)
+        self._forget_screen(self.cleaning_screen)
+        self.robot_screen.central_frame.button_left.unbind()
+        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+        self.robot_screen.central_frame.button_right.unbind()
+        self.robot_screen.central_frame.button_right.bind("<Button-1>", self.robot_to_clean)
+
+    def start_cleaning(self, event):
+        print("Iniciando limpeza")
     
 
 
