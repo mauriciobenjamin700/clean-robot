@@ -10,13 +10,14 @@ from src.frontend.styles.colors.page import SCREEN
 from src.frontend.styles.configs.position import center_window, align_frame_center
 
 class BoardScreen(CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, border:list[list[int]] = None):
         super().__init__(master)
 
         self.master = master
         self.configure(fg_color=SCREEN)
-
-        border = generate_chess_board()
+        if not border:
+            border = generate_chess_board()
+        
         #border = None
         self.central_frame = BorderFrame(self, "Voltar", "Gerar Obstáculos",border)
         self.central_frame.pack()

@@ -6,6 +6,7 @@ from tkinter.messagebox import (
     showerror,
     showwarning
 )
+from src.backend.funcs.board import generate_board, generate_obstacles
 from src.frontend.styles.colors.entry import PLACEHOLDER
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
@@ -65,20 +66,46 @@ class App(CTk):
 
         else:
             try:
-                self._show_screen(self.board)
-            except:
-                self.board = BoardScreen(self)
-            self._show_screen(self.board)
-            self._forget_screen(self.home)
-            align_frame_right(self, self.board.entry_frame)
-            align_frame_center(self, self.board.central_frame)
-            self.board.central_frame.button_left.bind("<Button-1>", self.board_to_home)
+                if hasattr(self, 'board'):
+                    self.board_screen.destroy()
+            except Exception as e:
+                print(f"Erro ao destruir o tabuleiro: {e}")
+           
+            try:
+                self.board = generate_board(int(width), int(height))
+                self.board_screen = BoardScreen(self, self.board)
+                self._show_screen(self.board_screen)
+                self._forget_screen(self.home)
+                align_frame_right(self, self.board_screen.entry_frame)
+                align_frame_center(self, self.board_screen.central_frame)
+                self.board_screen.central_frame.button_left.bind("<Button-1>", self.board_to_home)
+                self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_obstacles)
+            except Exception as e:
+                print(f"Erro ao gerar ou exibir o novo tabuleiro: {e}")
 
     def board_to_home(self, event):
         self._show_screen(self.home)
-        self._forget_screen(self.board)
+        self._forget_screen(self.board_screen)
         align_frame_center(self, self.home.central_frame)
-        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)            
+        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)       
+
+    def place_obstacles(self, event):
+        # Place obstacles in the board
+        num_obstacles = self.board_screen.entry_quantity.get().strip()
+
+        if not num_obstacles:
+            showerror("Erro", "Informe pelomenos um obstáculo")
+
+        else:
+            try:
+                num_obstacles = int(num_obstacles)
+                if num_obstacles > 0:
+                    generate_obstacles(self.board, num_obstacles)
+                    self.board_screen.central_frame.inner_frame.regenerate_board(self.board)
+                else:
+                    showerror("Erro", "Número de obstáculos inválido")
+            except ValueError:
+                showerror("Erro", "Número de obstáculos inválido")     
 
 
     def on_click(self, event):

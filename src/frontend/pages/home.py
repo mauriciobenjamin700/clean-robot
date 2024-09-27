@@ -1,10 +1,11 @@
 # home_screen.py
-from customtkinter import CTkFrame
+from customtkinter import CTkFrame, CTkLabel
 
 
 
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
+from src.frontend.styles.colors.label import TEXT, TEXT_STYLE
 from src.frontend.styles.colors.page import SCREEN
 from src.frontend.styles.configs.position import (
     center_window, 
@@ -23,10 +24,16 @@ class HomeScreen(CTkFrame):
         self.entry_frame = CTkFrame(self, fg_color=SCREEN)
         self.entry_frame.pack(side="right", anchor="e", padx=10, pady=10)
 
-        self.entry_WIDTH = Entry(self.entry_frame, placeholder_text="Linhas")
+        self.label_WIDTH = CTkLabel(self.entry_frame,text="Linhas", fg_color=SCREEN, text_color=TEXT, font=TEXT_STYLE)
+        self.label_WIDTH.pack(padx=10, pady=5)
+        
+        self.entry_WIDTH = Entry(self.entry_frame, placeholder_text="Digite aqui")
         self.entry_WIDTH.pack(padx=10, pady=5)
 
-        self.entry_HEIGHT = Entry(self.entry_frame, placeholder_text="Colunas")
+        self.label_HEIGHT = CTkLabel(self.entry_frame,text="Colunas", fg_color=SCREEN, text_color=TEXT, font=TEXT_STYLE)
+        self.label_HEIGHT.pack(padx=10, pady=5)
+
+        self.entry_HEIGHT = Entry(self.entry_frame, placeholder_text="Digite aqui")
         self.entry_HEIGHT.pack(padx=10, pady=5)
 
         self.bind("<Button-1>", self.on_click)
