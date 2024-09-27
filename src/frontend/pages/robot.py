@@ -32,9 +32,9 @@ class RobotScreen(CTkFrame):
 
         while True:
 
-            x,y = generate_position()
+            x,y = generate_position(self.board)
 
-            if place(self.central_frame.inner_frame.board, x, y, "robot"):
+            if place(self.board, x, y, "robot"):
 
                 break
 

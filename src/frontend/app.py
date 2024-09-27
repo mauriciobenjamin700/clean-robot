@@ -98,38 +98,31 @@ class App(CTk):
         num_obstacles = self.board_screen.entry_quantity.get().strip()
 
         if not num_obstacles:
-            showerror("Erro", "Informe pelomenos um obstáculo")
-
+            showerror("Erro", "Informe pelo menos um obstáculo")
         else:
             try:
                 num_obstacles = int(num_obstacles)
                 if num_obstacles > 0:
                     generate_obstacles(self.board, num_obstacles)
                     self.board_screen.central_frame.inner_frame.regenerate_board(self.board)
-                    #self.place_robot()
+                    self.boarder_to_robot()  # Transitar para a tela do robô
                 else:
                     showerror("Erro", "Número de obstáculos inválido")
             except ValueError:
-                showerror("Erro", "Número de obstáculos inválido")     
+                showerror("Erro", "Número de obstáculos inválido")
 
-    def place_robot(self, event=None):
-        try:
-            if hasattr(self, 'robot_screen'):
-                remove_robot(self.board)
-                self.robot_screen.destroy()
-        except Exception as e:
-            print(f"Erro ao destruir a tela do robô: {e}")
-
+    def boarder_to_robot(self):
+        # Método para transitar para a tela do robô
         self.robot_screen = RobotScreen(self, self.board)
-        self._show_screen(self.robot_screen)
-        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+        self.robot_screen.pack(fill="both", expand=True)
+        self.board_screen.pack_forget()
 
 
     def robot_to_board(self, event):
         self._show_screen(self.board_screen)
         self._forget_screen(self.robot_screen)
         align_frame_center(self, self.board_screen.central_frame)
-        self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_robot)
+        self.board_screen.central_frame.button_right.bind("<Button-1>", self.board_to_robot)
         self.board_screen.central_frame.button_right.configure(text="Gerar Robô")
 
     
