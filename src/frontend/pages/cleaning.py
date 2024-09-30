@@ -53,27 +53,46 @@ class CleaningScreen(CTkFrame):
         # Exemplo simples de animação com delay
 
         start_x, start_y = robot
-        robot_x = start_x
-        robot_y = start_y
+        #robot_x = start_x
+        #robot_y = start_y
 
-        steps = 10
-        delta_x = (end_x - start_x) / steps
-        delta_y = (end_y - start_y) / steps
+        #steps = 10
+        #delta_x = (end_x - start_x) / steps
+        #delta_y = (end_y - start_y) / steps
 
         robot_label = self.central_frame.inner_frame.get_label(start_x, start_y)
         target_label = self.central_frame.inner_frame.get_label(end_x, end_y)
 
         if start_x != end_x or start_y != end_y:
-            for _ in range(steps):
-                robot_x += delta_x
-                robot_y += delta_y
-                robot_label.place(x=robot_x, y=robot_y)
-                self.update()  # Atualiza a interface
-                sleep(0.1)  # Delay para simular a animação
+            # for _ in range(steps):
+            #     robot_x += delta_x
+            #     robot_y += delta_y
+            #     robot_label.place(x=robot_x, y=robot_y)
+            #     self.update()  # Atualiza a interface
+            #     sleep(0.1)  # Delay para simular a animação
 
             # Trocar as labels de posição
             robot_label.grid(row=end_y, column=end_x)
             target_label.grid(row=start_y, column=start_x)
+
+            # Atualizar a célula de origem para o estado correto
+
+            labels = self.central_frame.inner_frame.list_of_labels
+
+            if start_x > len(labels[0])-1 or start_y > len(labels)-1:
+                print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
+            else:
+                labels[start_y][start_x] = target_label
+
+            if end_x > len(labels[0])-1 or end_y > len(labels)-1:
+                print(f"end_x: {end_x} > {len(labels[0])}, end_y: {end_y} > {len(labels)}")
+            else:
+                labels[end_y][end_x] = robot_label
+
+            # Reposicionar a label do robô no centro da célula de destino
+            robot_label.place(x=0, y=0)
+            sleep(1)
+            self.update()
 
 
     def deep_search_clean(self):
