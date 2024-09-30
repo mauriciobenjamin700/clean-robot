@@ -164,7 +164,11 @@ def can_clean(board: list[list[int]], x:int, y:int) -> bool:
     """
     Calcula se as novas coordenadas (x, y) estão dentro dos limites do tabuleiro, não são obstáculos e não estão limpas.
     """
-    if 0 <= x < len(board) and 0 <= y < len(board[0]) and board[x][y] != OBSTACLE and board[x][y] != CLEAN and board[x][y] != ROBOT:
+
+    item = board[x][y] 
+
+
+    if in_board(board, x,y) and item != OBSTACLE and item != CLEAN and item != ROBOT:
         return True
     return False
 
@@ -173,3 +177,9 @@ def clean(board: list[list[int]], x:int, y:int) -> None:
     Limpa a célula atual
     """
     board[x][y] = CLEAN
+
+def is_clean(board: list[list[int]], x:int, y:int):
+    """
+    Verifica se a célula atual está limpa
+    """
+    return board[x][y] == CLEAN

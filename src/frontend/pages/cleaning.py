@@ -17,8 +17,9 @@ from src.backend.funcs.position import (
     clean,
     get_robot_position,
     in_board,
-    make_move
+    is_clean
 )
+from src.backend.funcs.board import board_size
 from src.backend.constants.main import MOVES
 
 class CleaningScreen(CTkFrame):
@@ -53,27 +54,17 @@ class CleaningScreen(CTkFrame):
         self.deep_search_clean()
 
     def animate_movement(self, robot: tuple[int, int], end_x: int, end_y: int):
-        # Exemplo simples de animação com delay
+        """
+        Animação de movimento ao trocar de lugar uma peça
+        """
         start_x, start_y = robot
-        #robot_x = start_x
-        #robot_y = start_y
 
-        #steps = 10
-        #delta_x = (end_x - start_x) / steps
-        #delta_y = (end_y - start_y) / steps
 
         robot_label = self.central_frame.inner_frame.get_label(start_x, start_y)
         target_label = self.central_frame.inner_frame.get_label(end_x, end_y)
 
         if start_x != end_x or start_y != end_y:
-            # for _ in range(steps):
-            #     robot_x += delta_x
-            #     robot_y += delta_y
-            #     robot_label.place(x=robot_x, y=robot_y)
-            #     self.update()  # Atualiza a interface
-            #     sleep(0.1)  # Delay para simular a animação
 
-            # Trocar as labels de posição
             robot_label.grid(row=end_y, column=end_x)
             target_label.grid(row=start_y, column=start_x)
 
@@ -84,10 +75,13 @@ class CleaningScreen(CTkFrame):
             if not in_board(self.board, start_x, start_y):
                 print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
             else:
+                target_label = self.central_frame.inner_frame._choice_item(self.board[start_y][start_x], self.board)
                 labels[start_y][start_x] = target_label
 
-            if  in_board(self.board, end_x, end_y):
-                labels[end_y][end_x] = robot_label
+            if in_board(labels, end_x, end_y):
+                print(f"X:{end_x}, Y:{end_y}")
+                print(f"board: {self.board}\n\nLabels: {labels}\n\nBoardSize: {board_size(self.board)}\n\nLabelsSize: {board_size(labels)}")
+                labels[end_x][end_y] = robot_label
             else:
                 print(f"end_x: {end_x} > {len(labels[0])}, end_y: {end_y} > {len(labels)}")
 
@@ -100,26 +94,35 @@ class CleaningScreen(CTkFrame):
 
 
     def deep_search_clean(self):
-        stack = [get_robot_position(self.board)]  # Pilha com a posição inicial do robô
+        map = [get_robot_position(self.board)]  # Mapa e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
         visited = set()  # Células visitadas
+        to_clean = set() # Células que precisam ser limpas
 
         def next_move():
-            if stack:
-                cell_x, cell_y = stack.pop()
+            if map: # Checar se a pilha não está vazia
+                cell_x, cell_y = map.pop() # Obter a próxima célula a ser visitada
 
-                if (cell_x, cell_y) not in visited:
-                    visited.add((cell_x, cell_y))
+                if in_board(self.board, cell_x, cell_y): # Checar se a célula está dentro do tabuleiro
 
-                    if can_clean(self.board, cell_x, cell_y):
-                        clean(self.board, cell_x, cell_y)
+                    if (cell_x, cell_y) not in visited: # Checar se a célula já foi visitada, caso não tenha sido, vamos visitala
+                        visited.add((cell_x, cell_y)) # Adicionar a célula atual ao conjunto de visitados
+
+                        if can_clean(self.board, cell_x, cell_y) and (cell_x, cell_y) in to_clean: # Checar se a célula atual pode e deve ser limpa
+                            clean(self.board, cell_x, cell_y)
+                        
                         self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
 
-                    for direction_x, direction_y in MOVES.values():
-                        new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
-                        if in_board(self.board, new_position_x, new_position_y) :
-                            if can_clean(self.board, new_position_x, new_position_y):
-                                stack.append((new_position_x, new_position_y))
+                        for direction_x, direction_y in MOVES.values(): # Percorrer as direções possíveis
 
-                    self.after(500, next_move)  # Atraso de 500ms antes do próximo movimento
+                            new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
+
+                            if in_board(self.board, new_position_x, new_position_y) : # Se a direção for válida (Estiver dentro do tabuleiro)
+
+                                if can_clean(self.board, new_position_x, new_position_y): # Caso a celula possa ser limpa, salvamos ela na pilha para voltar depois
+
+                                    map.append((new_position_x, new_position_y))
+                                    to_clean.add((new_position_x, new_position_y))
+
+                        self.after(1000, next_move)  # Atraso de 500ms antes do próximo movimento
 
         next_move()  # Iniciar o loop de movimentos
