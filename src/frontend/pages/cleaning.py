@@ -65,8 +65,8 @@ class CleaningScreen(CTkFrame):
 
         if start_x != end_x or start_y != end_y:
 
-            robot_label.grid(row=end_y, column=end_x)
-            target_label.grid(row=start_y, column=start_x)
+            robot_label.grid(row=end_x, column=end_y)
+            target_label.grid(row=start_x, column=start_y)
 
             # Atualizar a célula de origem para o estado correto
 
@@ -75,8 +75,8 @@ class CleaningScreen(CTkFrame):
             if not in_board(self.board, start_x, start_y):
                 print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
             else:
-                target_label = self.central_frame.inner_frame._choice_item(self.board[start_y][start_x], self.board)
-                labels[start_y][start_x] = target_label
+                target_label = self.central_frame.inner_frame._choice_item(self.board[start_x][start_y], self.board)
+                labels[start_x][start_y] = target_label
 
             if in_board(labels, end_x, end_y):
                 print(f"X:{end_x}, Y:{end_y}")
