@@ -109,12 +109,30 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
     
     return True
 
-def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
+def get_diretion(x:int,y:int) -> Literal['right'] | Literal['left'] | Literal['down'] | Literal['up'] | Literal['invalid']:
+    """
+    Retorna a direção para movimentar
+    """
+    if x == 0:
+
+        if y == 1:
+            return "right"
+        elif y == -1:
+            return "left"
+        
+    elif y == 0:
+        if x == 1:
+            return "down"
+        elif x == -1:
+            return "up"
+        
+    return "invalid"
+
+def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> None:
     """
     Tenta mover o robo e caso falhe, retorna False
     """
-    
-    result = True
+
     
     oldx = x
     oldy = y
@@ -127,18 +145,12 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         y += 1
     elif direction == "left":
         y -= 1
-    else:
-        return False
 
-
-    if not can_move(board, x, y):
-        return False
-
-    else:
+    if can_move(board, x, y):
+        print("movi")
         board[x][y] = ROBOT
         board[oldx][oldy] = CLEAN
         
-    return result
 
 def new_robot_positon(robot: tuple[int, int], direction: tuple[int, int]) -> tuple[int, int]:
     """
