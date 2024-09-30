@@ -16,6 +16,7 @@ from src.backend.funcs.position import (
     can_clean,
     clean,
     get_robot_position,
+    in_board,
     make_move
 )
 from src.backend.constants.main import MOVES
@@ -40,18 +41,19 @@ class CleaningScreen(CTkFrame):
         self.entry_time_limit = Entry(self.right_frame, placeholder_text="Tempo Limite")
         self.entry_time_limit.pack(padx=10, pady=5)
 
-        self.label_time_current = Label(self.right_frame, text="Tempo Atual: 0")
+        self.time_current = 0
+        self.label_time_current = Label(self.right_frame, text=f"Tempo Atual: {self.time_current}")
         self.label_time_current.pack(padx=10, pady=5)
 
 
 
     def start_cleaning(self, event=None):
         # Exemplo de movimentação do robô para a posição (5, 5)
+        self.time_current = 0
         self.deep_search_clean()
 
     def animate_movement(self, robot: tuple[int, int], end_x: int, end_y: int):
         # Exemplo simples de animação com delay
-
         start_x, start_y = robot
         #robot_x = start_x
         #robot_y = start_y
@@ -79,59 +81,45 @@ class CleaningScreen(CTkFrame):
 
             labels = self.central_frame.inner_frame.list_of_labels
 
-            if start_x > len(labels[0])-1 or start_y > len(labels)-1:
+            if not in_board(self.board, start_x, start_y):
                 print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
             else:
                 labels[start_y][start_x] = target_label
 
-            if end_x > len(labels[0])-1 or end_y > len(labels)-1:
-                print(f"end_x: {end_x} > {len(labels[0])}, end_y: {end_y} > {len(labels)}")
-            else:
+            if  in_board(self.board, end_x, end_y):
                 labels[end_y][end_x] = robot_label
+            else:
+                print(f"end_x: {end_x} > {len(labels[0])}, end_y: {end_y} > {len(labels)}")
 
             # Reposicionar a label do robô no centro da célula de destino
-            robot_label.place(x=0, y=0)
-            sleep(1)
-            self.update()
+            #robot_label.place(x=0, y=0)
+            # Usar after() em vez de sleep
+            self.time_current+=1
+            self.label_time_current.configure(text=f"Tempo Atual: {self.time_current}")
+            self.after(1000, self.update)  # Delay de 1 segundo entre as atualizações
 
 
     def deep_search_clean(self):
-        """
-        Busca em profundidade (Deep Search First)
+        stack = [get_robot_position(self.board)]  # Pilha com a posição inicial do robô
+        visited = set()  # Células visitadas
 
-        - Args:
-            - board:: list[list[int]]: tabuleiro
-            - x:: int: posição x do robô
-            - y:: int: posição y do robô
+        def next_move():
+            if stack:
+                cell_x, cell_y = stack.pop()
 
-        - Returns:
-            - None
+                if (cell_x, cell_y) not in visited:
+                    visited.add((cell_x, cell_y))
 
-        """
-        stack = [get_robot_position(self.board)] # Pilha com a posição inicial do robo
-        print(f"Stack == {stack}")
-        visited = set() # Rastreando as celulas visitasdas
-        
-        while stack: # Rastreando enquanto houver celulas na pilha
+                    if can_clean(self.board, cell_x, cell_y):
+                        clean(self.board, cell_x, cell_y)
+                        self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
 
-            cell_x, cell_y = stack.pop() # Remove a célula do topo da pilha e armazena suas coordenadas em cx e cy.
-            
-            if not ((cell_x, cell_y) in visited): # Se a célula não foi visitada, visitar.
+                    for direction_x, direction_y in MOVES.values():
+                        new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
+                        if in_board(self.board, new_position_x, new_position_y) :
+                            if can_clean(self.board, new_position_x, new_position_y):
+                                stack.append((new_position_x, new_position_y))
 
-                visited.add((cell_x, cell_y)) # Adiciona a célula atual ao conjunto de visitados.
-                
-                if can_clean(self.board, cell_x, cell_y): # Verifica se a célula atual pode ser limpa
-                    
-                    clean(self.board, cell_x, cell_y) # Limpa a célula atual.
-                    
-                    self.animate_movement(
-                        get_robot_position(self.board),
-                        cell_x,
-                        cell_y,
-                    )
-                
-                for direction_x, direction_y in MOVES.values(): # Para cada movimento possível (cima, baixo, esquerda, direita), calcula as novas coordenadas (new_position_x, new_position_y). Se as novas coordenadas estão dentro dos limites do tabuleiro, não são obstáculos e não estão limpas, adiciona-as à pilha para exploração futura.
-                    new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
-                    
-                    if can_clean(self.board,new_position_x, new_position_y):
-                        stack.append((new_position_x, new_position_y))
+                    self.after(500, next_move)  # Atraso de 500ms antes do próximo movimento
+
+        next_move()  # Iniciar o loop de movimentos

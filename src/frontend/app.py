@@ -80,7 +80,7 @@ class App(CTk):
                 self.board = generate_board(int(width), int(height))
                 self.board_screen = BoardScreen(self, self.board)
                 self._show_screen(self.board_screen)
-                self._forget_screen(self.home)
+                self.home.destroy()
                 align_frame_right(self, self.board_screen.entry_frame)
                 align_frame_center(self, self.board_screen.central_frame)
                 self.board_screen.central_frame.button_left.bind("<Button-1>", self.board_to_home)
@@ -93,7 +93,7 @@ class App(CTk):
             self.home.destroy()
             self.home = HomeScreen(self)
         self._show_screen(self.home)
-        self._forget_screen(self.board_screen)
+        self.board_screen.destroy()
         align_frame_center(self, self.home.central_frame)
         self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)     
         self.home.central_frame.button_left.bind("<Button-1>", self._exit)  
@@ -101,24 +101,22 @@ class App(CTk):
     def place_obstacles(self, event=None):
         # Place obstacles in the board
         num_obstacles = self.board_screen.entry_quantity.get().strip()
-
+        print("Num obstacles: ", num_obstacles)
         if not num_obstacles.isnumeric():
             showerror("Erro", "Informe um número de obstáculos válido")
 
         else:
-            try:
-                num_obstacles = int(num_obstacles)
+            
+            num_obstacles = int(num_obstacles)
 
-                if num_obstacles >= 0:
-                    if num_obstacles == 0:
-                        showinfo("Aviso", "Nenhum obstaculo será adicionado")
+            if num_obstacles >= 0:
+                if num_obstacles == 0:
+                    showinfo("Aviso", "Nenhum obstaculo será adicionado")
 
-                    generate_obstacles(self.board, num_obstacles)
-                    self.board_screen.central_frame.inner_frame.regenerate_board(self.board)
-                    self.boarder_to_robot()  # Transitar para a tela do robô
-                else:
-                    showerror("Erro", "Número de obstáculos inválido")
-            except ValueError:
+                generate_obstacles(self.board, num_obstacles)
+                #self.board_screen.central_frame.inner_frame.regenerate_board(self.board)
+                self.boarder_to_robot()  # Transitar para a tela do robô
+            else:
                 showerror("Erro", "Número de obstáculos inválido")
 
     def boarder_to_robot(self, event=None):
@@ -131,7 +129,7 @@ class App(CTk):
                 print(f"Erro ao destruir o tabuleiro: {e}")
         self.robot_screen = RobotScreen(self, self.board)
         self._show_screen(self.robot_screen)
-        self.board_screen.pack_forget()
+        self.board_screen.destroy()
         self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
         self.robot_screen.central_frame.button_right.bind("<Button-1>", self.place_robot)
 
@@ -144,7 +142,8 @@ class App(CTk):
         
 
         self._show_screen(self.board_screen)
-        self._forget_screen(self.robot_screen)
+        #self._forget_screen(self.robot_screen)
+        self.robot_screen.destroy()
         align_frame_center(self, self.board_screen.central_frame)
         self.board_screen.central_frame.button_right.unbind()
         self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_obstacles)

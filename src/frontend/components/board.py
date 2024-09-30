@@ -64,7 +64,11 @@ class ChessBoardFrame(CTkFrame):
 
     
     def get_label(self, x, y):
-        return self.list_of_labels[x][y]
+        if 0 <= x < len(self.list_of_labels) and 0 <= y < len(self.list_of_labels[0]):
+            return self.list_of_labels[x][y]
+        else:
+            raise IndexError(f"Coordenadas fora dos limites: ({x}, {y})")
+
 
     def regenerate_board(self, new_board):
         # Destruir o tabuleiro atual
@@ -77,13 +81,12 @@ class ChessBoardFrame(CTkFrame):
 
 
     def _choice_item(self, item: int, board: list[list[int]]) -> CTkLabel:
+        width = self.winfo_width() // len(board[0])  # Largura da label
+        height = self.winfo_height() // len(board)   # Altura da label
 
-        width = max(30, int(self.winfo_width() // len(board[0])))  # Largura da label
-        height = max(30, int(self.winfo_height() // len(board)))  # Altura da label
-
-        def resize_image(image, width, height) -> CTkImage:
-            resized_image = image.resize((width, height), Image.LANCZOS)
-            return CTkImage(light_image=resized_image, dark_image=resized_image)
+        #def resize_image(image, width, height) -> CTkImage:
+        #    resized_image = image.resize((width, height), Image.LANCZOS)
+        #    return CTkImage(light_image=resized_image, dark_image=resized_image)
 
         style = None
         if item == CLEAN:
@@ -91,18 +94,20 @@ class ChessBoardFrame(CTkFrame):
         elif item == TRASH:
             style = CTkLabel(self, text="", fg_color="black", width=width, height=height)
         elif item == OBSTACLE:
-            resized_image = resize_image(self.obstacle, width, height)
-            style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
-            style.image = resized_image  # Manter uma referência para evitar coleta de lixo
-        elif item == ROBOT:
-            resized_image = resize_image(self.robot, width, height)
-            style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
-            style.image = resized_image  # Manter uma referência para evitar coleta de lixo
-        else:
+            #resized_image = resize_image(self.obstacle, width, height)
+            #style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
+            #style.image = resized_image  # Manter uma referência para evitar coleta de lixo
             style = CTkLabel(self, text="", fg_color="red", width=width, height=height)
 
-        return style
+        elif item == ROBOT:
+            #resized_image = resize_image(self.robot, width, height)
+            #style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
+            #style.image = resized_image  # Manter uma referência para evitar coleta de lixo
+            style = CTkLabel(self, text="", fg_color="green", width=width, height=height)
+        else:
+            style = CTkLabel(self, text="", fg_color="blue", width=width, height=height)
 
+        return style
 class BorderFrame(CTkFrame):
     def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2", board: list = generate_chess_board()):
         super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT)

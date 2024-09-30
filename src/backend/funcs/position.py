@@ -31,6 +31,16 @@ def generate_position(board:list[list]) -> tuple[int, int]:
     
     return x, y
 
+
+def in_board(board:list[list], x:int, y:int) -> bool:
+    """
+    Verifica se a posição está dentro do tabuleiro.
+    """
+    width = len(board)
+    height = len(board[0])
+    
+    return 0 <= x < width and 0 <= y < height
+
     
 def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) -> bool:
     """
@@ -41,7 +51,7 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
     
     result = True
     
-    if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
+    if not in_board(board, x,y): # Checando se a posição é válida
         result = False
     
     elif board[x][y] == OBSTACLE:
@@ -90,10 +100,8 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
     """
     Chack se pode mover
     """
-    width = len(board)
-    height = len(board[0])
 
-    if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
+    if not in_board(board,x,y): # Checando se a posição é válida
         return False
     
     elif board[x][y] == OBSTACLE:
