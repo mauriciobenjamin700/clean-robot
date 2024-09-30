@@ -72,18 +72,19 @@ class CleaningScreen(CTkFrame):
 
             labels = self.central_frame.inner_frame.list_of_labels
 
-            if not in_board(self.board, start_x, start_y):
-                print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
-            else:
-                target_label = self.central_frame.inner_frame._choice_item(self.board[start_x][start_y], self.board)
-                labels[start_x][start_y] = target_label
-
             if in_board(labels, end_x, end_y):
                 print(f"X:{end_x}, Y:{end_y}")
-                print(f"board: {self.board}\n\nLabels: {labels}\n\nBoardSize: {board_size(self.board)}\n\nLabelsSize: {board_size(labels)}")
                 labels[end_x][end_y] = robot_label
             else:
                 print(f"end_x: {end_x} > {len(labels[0])}, end_y: {end_y} > {len(labels)}")
+
+            if not in_board(self.board, start_x, start_y):
+                print(f"start_x: {start_x} > {len(labels[0])}, start_y: {start_y} > {len(labels)}")
+            else:
+                color = self.central_frame.inner_frame._choice_color(self.board[start_x][start_y])
+                target_label.configure(fg_color=color)
+                labels[start_x][start_y] = target_label
+
 
             # Reposicionar a label do robô no centro da célula de destino
             #robot_label.place(x=0, y=0)
@@ -109,7 +110,8 @@ class CleaningScreen(CTkFrame):
 
                         if can_clean(self.board, cell_x, cell_y) and (cell_x, cell_y) in to_clean: # Checar se a célula atual pode e deve ser limpa
                             clean(self.board, cell_x, cell_y)
-                        
+                            to_clean.remove((cell_x, cell_y))
+
                         self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
 
                         for direction_x, direction_y in MOVES.values(): # Percorrer as direções possíveis
@@ -123,6 +125,6 @@ class CleaningScreen(CTkFrame):
                                     map.append((new_position_x, new_position_y))
                                     to_clean.add((new_position_x, new_position_y))
 
-                        self.after(1000, next_move)  # Atraso de 500ms antes do próximo movimento
+                        self.after(2000, next_move)  # Atraso de 500ms antes do próximo movimento
 
         next_move()  # Iniciar o loop de movimentos

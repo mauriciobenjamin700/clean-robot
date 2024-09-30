@@ -80,32 +80,26 @@ class ChessBoardFrame(CTkFrame):
         self.create_board(new_board)
 
 
+    def _choice_color(self, item: int) -> str:
+        if item == CLEAN:
+            return "white"
+        elif item == TRASH:
+            return "black"
+        elif item == OBSTACLE:
+            return "red"
+        elif item == ROBOT:
+            return "green"
+        else:
+            return "blue"
+        
+
     def _choice_item(self, item: int, board: list[list[int]]) -> CTkLabel:
         width = self.winfo_width() // len(board[0])  # Largura da label
         height = self.winfo_height() // len(board)   # Altura da label
 
-        #def resize_image(image, width, height) -> CTkImage:
-        #    resized_image = image.resize((width, height), Image.LANCZOS)
-        #    return CTkImage(light_image=resized_image, dark_image=resized_image)
+        color = self._choice_color(item)
 
-        style = None
-        if item == CLEAN:
-            style = CTkLabel(self, text="", fg_color="white", width=width, height=height)
-        elif item == TRASH:
-            style = CTkLabel(self, text="", fg_color="black", width=width, height=height)
-        elif item == OBSTACLE:
-            #resized_image = resize_image(self.obstacle, width, height)
-            #style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
-            #style.image = resized_image  # Manter uma referência para evitar coleta de lixo
-            style = CTkLabel(self, text="", fg_color="red", width=width, height=height)
-
-        elif item == ROBOT:
-            #resized_image = resize_image(self.robot, width, height)
-            #style = CTkLabel(self, image=resized_image, text="", width=width, height=height)
-            #style.image = resized_image  # Manter uma referência para evitar coleta de lixo
-            style = CTkLabel(self, text="", fg_color="green", width=width, height=height)
-        else:
-            style = CTkLabel(self, text="", fg_color="blue", width=width, height=height)
+        style = CTkLabel(self, text="", fg_color=color, width=width, height=height)
 
         return style
 class BorderFrame(CTkFrame):
