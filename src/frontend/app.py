@@ -135,8 +135,7 @@ class App(CTk):
 
 
     def robot_to_board(self, event):
-        if hasattr(self, 'board_screen'):
-            self.board_screen.destroy()
+        if not hasattr(self, 'board_screen'):
             self.board = generate_board(len(self.board), len(self.board[0]))
             self.board_screen = BoardScreen(self, self.board)
         
