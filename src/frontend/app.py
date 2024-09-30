@@ -89,10 +89,14 @@ class App(CTk):
                 print(f"Erro ao gerar ou exibir o novo tabuleiro: {e}")
 
     def board_to_home(self, event):
+        if hasattr(self, 'home'):
+            self.home.destroy()
+            self.home = HomeScreen(self)
         self._show_screen(self.home)
         self._forget_screen(self.board_screen)
         align_frame_center(self, self.home.central_frame)
-        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)       
+        self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)     
+        self.home.central_frame.button_left.bind("<Button-1>", self._exit)  
 
     def place_obstacles(self, event=None):
         # Place obstacles in the board
@@ -146,7 +150,7 @@ class App(CTk):
         self.board_screen.central_frame.button_right.bind("<Button-1>", self.place_obstacles)
         self.board_screen.central_frame.button_right.configure(text="Gerar Obstáculos")
         self.robot_screen.central_frame.button_left.unbind()
-        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.robot_to_board)
+        self.robot_screen.central_frame.button_left.bind("<Button-1>", self.board_to_home)
 
 
     def place_robot(self, event):
@@ -170,8 +174,6 @@ class App(CTk):
         self.robot_screen.central_frame.button_left.unbind()
         self.robot_screen.central_frame.button_left.bind("<Button-1>", self.cleaning_to_robot)
         self._show_screen(self.cleaning_screen)
-        self.robot_screen.central_frame.button_right.bind("<Button-1>", self.start_cleaning)
-        self.robot_screen.central_frame.button_right.configure(text="Avançar")
         self.cleaning_screen.central_frame.button_left.bind("<Button-1>", self.cleaning_to_robot)
         self.cleaning_screen.central_frame.button_right.bind("<Button-1>", self.start_cleaning)
 
@@ -186,7 +188,8 @@ class App(CTk):
         self.robot_screen.central_frame.button_right.unbind()
         self.robot_screen.central_frame.button_right.bind("<Button-1>", self.robot_to_clean)
 
-    def start_cleaning(self, event):
+    def start_cleaning(self, event=None):
+        print(self.board)
         self.cleaning_screen.start_cleaning()
     
 

@@ -34,11 +34,11 @@ class ChessBoardFrame(CTkFrame):
         self.obstacle = Image.open("images/obstacle.png")
         self.robot = Image.open("images/robot.png")
         self.list_of_labels = []
-
         self.create_board(board)
 
     def create_board(self, board):
-                    
+        
+        self.board = board
 
         lines = len(board)
 
@@ -104,7 +104,7 @@ class ChessBoardFrame(CTkFrame):
         return style
 
 class BorderFrame(CTkFrame):
-    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2", border: list = generate_chess_board()):
+    def __init__(self, master=None, name_button_left: str = "Button 1", name_button_right: str = "Button 2", board: list = generate_chess_board()):
         super().__init__(master, width=CENTRAL_FRAME_WIDTH, height=CENTRAL_FRAME_HEIGHT)
 
         # Desativar a propagação do tamanho
@@ -113,7 +113,7 @@ class BorderFrame(CTkFrame):
         self.configure(fg_color=WINDOW)
 
         # Create inner frame
-        self.inner_frame = ChessBoardFrame(self, border)
+        self.inner_frame = ChessBoardFrame(self, board)
         self.inner_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
         # Create button frame to hold buttons

@@ -13,16 +13,17 @@ from src.backend.funcs.position import (
 )
 
 class RobotScreen(CTkFrame):
-    def __init__(self, master, border:list[list[int]] = None):
+    def __init__(self, master, board:list[list[int]] = None):
         super().__init__(master)
 
         self.master = master
-        self.board = border
         self.configure(fg_color=SCREEN)
-        if not self.board:
+        if not board:
             self.board = generate_chess_board()
+        else:
+            self.board = board
         
-        #border = None
+        #board = None
         self.central_frame = BorderFrame(self, "Voltar", "Gerar Robô",self.board)
         self.central_frame.pack()
         

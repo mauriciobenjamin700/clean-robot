@@ -42,20 +42,16 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
     result = True
     
     if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
-        print("\nPosição inválida")
         result = False
     
     elif board[x][y] == OBSTACLE:
-        print("\nJá existe um obstáculo nessa posição")
         result = False
         
     else:
         if type == "robot":
             board[x][y] = ROBOT
-            print("\nRobô colocado com sucesso")
         elif type == "obstacle":
             board[x][y] = OBSTACLE
-            print("\nObstáculo colocado com sucesso")
         else:
             raise ValueError("Tipo inválido")
     return result
@@ -98,11 +94,9 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
     height = len(board[0])
 
     if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
-        print("\nPosição inválida")
         return False
     
     elif board[x][y] == OBSTACLE:
-        print("\nJá existe um obstáculo nessa posição")
         return  False
     
     return True
@@ -135,7 +129,6 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
     else:
         board[x][y] = ROBOT
         board[oldx][oldy] = CLEAN
-        print("\nRobô movido com sucesso")
         
     return result
 
@@ -163,6 +156,12 @@ def can_clean(board: list[list[int]], x:int, y:int) -> bool:
     """
     Calcula se as novas coordenadas (x, y) estão dentro dos limites do tabuleiro, não são obstáculos e não estão limpas.
     """
-    if 0 <= x < len(board) and 0 <= y < len(board[0]) and board[x][y] != OBSTACLE and board[x][y] != CLEAN:
+    if 0 <= x < len(board) and 0 <= y < len(board[0]) and board[x][y] != OBSTACLE and board[x][y] != CLEAN and board[x][y] != ROBOT:
         return True
     return False
+
+def clean(board: list[list[int]], x:int, y:int) -> None:
+    """
+    Limpa a célula atual
+    """
+    board[x][y] = CLEAN

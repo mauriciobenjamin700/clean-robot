@@ -57,20 +57,16 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
     result = True
     
     if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
-        print("\nPosição inválida")
         result = False
     
     elif board[x][y] == OBSTACLE:
-        print("\nJá existe um obstáculo nessa posição")
         result = False
         
     else:
         if type == "robot":
             board[x][y] = ROBOT
-            print("\nRobô colocado com sucesso")
         elif type == "obstacle":
             board[x][y] = OBSTACLE
-            print("\nObstáculo colocado com sucesso")
         else:
             raise ValueError("Tipo inválido")
     return result
@@ -124,17 +120,14 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
         raise ValueError("Direção inválida")
     
     if x < 0 or x >= width or y < 0 or y >= height: # Checando se a posição é válida
-        print("\nPosição inválida")
         result = False
     
     elif board[x][y] == OBSTACLE:
-        print("\nJá existe um obstáculo nessa posição")
         result = False
         
     else:
         board[x][y] = ROBOT
         board[oldx][oldy] = VOID
-        print("\nRobô movido com sucesso")
         
     return result
 
