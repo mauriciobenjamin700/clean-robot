@@ -81,6 +81,9 @@ class ChessBoardFrame(CTkFrame):
 
 
     def _choice_color(self, item: int) -> str:
+        """
+        dado um valor, retorna a cor correta
+        """
         if item == CLEAN:
             return "white"
         elif item == TRASH:

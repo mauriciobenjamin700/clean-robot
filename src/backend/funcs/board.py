@@ -5,9 +5,9 @@ from src.backend.funcs.position import(
 )
 
 
-def generate_board(m:int, n:int) -> list[list]:
+def generate_board(lines:int, columns:int) -> list[list]:
     
-    board = [[TRASH for i in range(0,n,1)] for j in range(0,m,1)]
+    board = [[TRASH for i in range(0,columns,1)] for j in range(0,lines,1)]
     
     return board
 
@@ -34,6 +34,6 @@ def board_size(board: list[list[int]]) -> tuple[int, int]:
         - board: list[list[int]] -> Tabuleiro
     
     - Return:
-        - tuple[int, int]: Tupla com a quantidade de linhas e colunas
+        - tuple[int, int]: Tupla com a quantidade de linhas e colunas (X, Y)
     """
     return len(board), len(board[0])

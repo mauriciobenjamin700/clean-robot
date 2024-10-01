@@ -15,12 +15,13 @@ from src.frontend.styles.configs.position import center_window, align_frame_cent
 
 from src.backend.funcs.position import (
     can_clean,
+    can_move,
     clean,
     get_robot_position,
     in_board,
     is_clean,
     move,
-    get_diretion
+    get_direction
 )
 from src.backend.funcs.board import board_size
 from src.backend.constants.main import MOVES
@@ -56,40 +57,22 @@ class CleaningScreen(CTkFrame):
         self.time_current = 0
         self.DFS()
 
-    def animate_movement(self, robot: tuple[int, int], end_x: int, end_y: int):
+    def animate_movement(self):
         """
         Animação de movimento ao trocar de lugar uma peça
         """
-        start_x, start_y = robot
+        heigh, width = board_size(self.board)
+        for x in range(0, heigh,1):
+            for y in range(0, width,1):
 
+                if in_board(self.board, x, y):
+                    color = self.central_frame.inner_frame._choice_color(self.board[x][y])
+                    self.central_frame.inner_frame.list_of_labels[x][y].configure(fg_color=color)
 
-        robot_label = self.central_frame.inner_frame.get_label(start_x, start_y)
-        target_label = self.central_frame.inner_frame.get_label(end_x, end_y)
-
-        if start_x != end_x or start_y != end_y:
-
-            robot_label.grid(row=end_x, column=end_y)
-            target_label.grid(row=start_x, column=start_y)
-
-            # Atualizar a célula de origem para o estado correto
-
-            labels = self.central_frame.inner_frame.list_of_labels
-
-
-            if in_board(self.board, end_x, end_y):
-                labels[end_x][end_y] = robot_label
-
-
-            if in_board(self.board, start_x, start_y):
-                #color = self.central_frame.inner_frame._choice_color(self.board[start_x][start_y])
-                color = "green"
-                target_label.configure(fg_color=color)
-                labels[start_x][start_y] = target_label
-
-
-            self.time_current+=1
-            self.label_time_current.configure(text=f"Tempo Atual: {self.time_current}")
-            self.after(1000, self.update)  # Delay de 1 segundo entre as atualizações
+        print(f"Boarder: {self.board}")
+        self.time_current+=1
+        self.label_time_current.configure(text=f"Tempo Atual: {self.time_current}")
+        self.after(1000, self.update)  # Delay de 1 segundo entre as atualizações
 
     def DFS(self):
         stack = [get_robot_position(self.board)]  # stacka e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
@@ -105,27 +88,31 @@ class CleaningScreen(CTkFrame):
                     if (cell_x, cell_y) not in visited:  # Checar se a célula já foi visitada, caso não tenha sido, vamos visitá-la
                         visited.add((cell_x, cell_y))  # Adicionar a célula atual ao conjunto de visitados
 
-                        if can_clean(self.board, cell_x, cell_y):
+                    if can_clean(self.board, cell_x, cell_y):
 
-                            x, y = get_robot_position(self.board)
-                            direction = get_diretion((x, y), cell_x, cell_y)
-                            print(direction)
-                            if move(self.board, x, y, direction):
-                                print(f"Linha 119: {self.board}")
-                                self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
-
-                        for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
-
-                            new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
-
-                            if in_board(self.board, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
-                                stack.append((new_position_x, new_position_y))
-                        print("fiz um ciclo")
-                        self.after(1000, next_move)  # Atraso antes do próximo movimento
+                        x, y = get_robot_position(self.board)
+                        direction = get_direction((x, y), cell_x, cell_y)
+                        print(direction)
+                        if move(self.board, x, y, direction):
+                            print(f"Linha 119: {self.board}")
+                            
+                        self.animate_movement()
                     else:
                         print(f"Já foi Visitada: X:{cell_x}, Y:{cell_y}")
+                    
+
                 else:
                     print(f"Fora do Tabuleiro: X: {cell_x}, Y: {cell_y}")
+
+
+                for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
+
+                    new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
+
+                    if in_board(self.board, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
+                        if can_move(self.board, new_position_x, new_position_y):
+                            stack.append((new_position_x, new_position_y))
+                self.after(1000, next_move)  # Atraso antes do próximo movimento
             else:
                 print("Pilha vazia, finalizando a limpeza.")
 

@@ -35,19 +35,22 @@ def generate_position(board:list[list]) -> tuple[int, int]:
 def in_board(board:list[list], x:int, y:int) -> bool:
     """
     Verifica se a posição está dentro do tabuleiro.
+
+    - Args:
+      - board:Tabuleiro
+      - x:: line index
+      - y:: column index
     """
-    width = len(board)
-    height = len(board[0])
+    lines = len(board)
+    columns = len(board[0])
     
-    return 0 <= x < width and 0 <= y < height
+    return 0 <= x < lines and 0 <= y < columns
 
     
 def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) -> bool:
     """
     Coloca um robô ou obstáculo no tabuleiro.
     """
-    width = len(board)
-    height = len(board[0])
     
     result = True
     
@@ -71,13 +74,13 @@ def get_robot_position(board:list[list]) -> tuple[int, int]:
     """
     obtem a posição do robo
     """
-    width = len(board)
-    height = len(board[0])
+    lines = len(board)
+    columns = len(board[0])
     
-    for i in range(0,width,1):
-        for j in range(0,height,1):
-            if board[i][j] == ROBOT:
-                return i, j
+    for l in range(0,lines,1):
+        for c in range(0,columns,1):
+            if board[l][c] == ROBOT:
+                return l, c
             
     raise ValueError("Robô não encontrado")
 
@@ -99,6 +102,11 @@ def remove_robot(board:list[list[int]]) -> bool:
 def can_move(board:list[list[int]], x:int, y:int) -> bool:
     """
     Chack se pode mover
+
+    - Args:
+        - board:: list[list[int]]: Tabuleiro
+        - x::int: posicao na linha
+        - y:: int: posicao na coluna
     """
 
     if not in_board(board,x,y): # Checando se a posição é válida
@@ -112,31 +120,30 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
     
     return True
 
-def get_diretion(robot: tuple[int],x:int,y:int) -> Literal['right'] | Literal['left'] | Literal['down'] | Literal['up'] | Literal['invalid']:
+def get_direction(robot: tuple[int, int], x: int, y: int) -> Literal['right', 'left', 'down', 'up', 'invalid']:
     """
     Retorna a direção para movimentar
+
+    - Args:
+      - x: int: Altura
+      - y: int: Largura
     """
 
     robot_x, robot_y = robot
 
-
     if robot_x == x:
         if robot_y == y:
             return "invalid"
-        
-        if robot_y - y == 1:
-            return "down"
-        
-        elif robot_y - y == -1:
-            return "up"
-        
-    elif robot_y == y:
-        if robot_x - x == 1:
+        elif robot_y < y:
             return "right"
-        elif robot_x - x == -1:
+        elif robot_y > y:
             return "left"
+    elif robot_y == y:
+        if robot_x < x:
+            return "down"
+        elif robot_x > x:
+            return "up"
 
-    
     print(f"Robo: {robot_x} and {robot_y}\nx = {x} and y = {y}")
     return "invalid"
 
