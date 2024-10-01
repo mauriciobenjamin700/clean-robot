@@ -107,50 +107,74 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
     elif board[x][y] == OBSTACLE:
         return  False
     
+    elif board[x][y] == ROBOT:
+        return False
+    
     return True
 
-def get_diretion(x:int,y:int) -> Literal['right'] | Literal['left'] | Literal['down'] | Literal['up'] | Literal['invalid']:
+def get_diretion(robot: tuple[int],x:int,y:int) -> Literal['right'] | Literal['left'] | Literal['down'] | Literal['up'] | Literal['invalid']:
     """
     Retorna a direção para movimentar
     """
-    if x == 0:
 
-        if y == 1:
-            return "right"
-        elif y == -1:
-            return "left"
+    robot_x, robot_y = robot
+
+
+    if robot_x == x:
+        if robot_y == y:
+            return "invalid"
         
-    elif y == 0:
-        if x == 1:
+        if robot_y - y == 1:
             return "down"
-        elif x == -1:
+        
+        elif robot_y - y == -1:
             return "up"
         
+    elif robot_y == y:
+        if robot_x - x == 1:
+            return "right"
+        elif robot_x - x == -1:
+            return "left"
+
+    
+    print(f"Robo: {robot_x} and {robot_y}\nx = {x} and y = {y}")
     return "invalid"
 
-def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> None:
+def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
     """
     Tenta mover o robo e caso falhe, retorna False
+
+    - Args:
+      - board:: list[list[int]]: Tabuleiro
+      - x::int : Posição X do Robô
+      - y::int : Posição Y do Robô
+      - direction::str: Direção para mover o robo
+
     """
-
-    
-    oldx = x
-    oldy = y
-    
-    if direction == "up":
-        x -= 1
-    elif direction == "down":
-        x += 1
-    elif direction == "right":
-        y += 1
-    elif direction == "left":
-        y -= 1
-
-    if can_move(board, x, y):
-        print("movi")
-        board[x][y] = ROBOT
-        board[oldx][oldy] = CLEAN
+    if direction in MOVES.keys():
+            
         
+        oldx = x
+        oldy = y
+        
+        if direction == "up":
+            x -= 1
+        elif direction == "down":
+            x += 1
+        elif direction == "right":
+            y += 1
+        elif direction == "left":
+            y -= 1
+
+        if can_move(board, x, y):
+            print("movi")
+            board[x][y] = ROBOT
+            board[oldx][oldy] = CLEAN
+            return True
+            
+    else:
+        print("Direção inválida")
+        return False
 
 def new_robot_positon(robot: tuple[int, int], direction: tuple[int, int]) -> tuple[int, int]:
     """
@@ -180,7 +204,7 @@ def can_clean(board: list[list[int]], x:int, y:int) -> bool:
     item = board[x][y] 
 
 
-    if in_board(board, x,y) and item != OBSTACLE and item != CLEAN and item != ROBOT:
+    if in_board(board, x,y) and item != OBSTACLE and item != ROBOT:
         return True
     return False
 

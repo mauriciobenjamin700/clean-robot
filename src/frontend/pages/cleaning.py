@@ -2,6 +2,7 @@ from customtkinter import (
     CTkFrame,
     CTkLabel
 )
+from collections import deque
 from time import sleep
 
 
@@ -49,13 +50,11 @@ class CleaningScreen(CTkFrame):
         self.label_time_current.pack(padx=10, pady=5)
 
 
-        print(f"Mesa ao Abrir a tela de Limpeza: {self.board}")
-
 
     def start_cleaning(self, event=None):
         # Exemplo de movimentação do robô para a posição (5, 5)
         self.time_current = 0
-        self.deep_search_clean()
+        self.DFS()
 
     def animate_movement(self, robot: tuple[int, int], end_x: int, end_y: int):
         """
@@ -78,57 +77,60 @@ class CleaningScreen(CTkFrame):
 
 
             if in_board(self.board, end_x, end_y):
-                print(f"X:{end_x}, Y:{end_y}")
                 labels[end_x][end_y] = robot_label
 
 
             if in_board(self.board, start_x, start_y):
                 #color = self.central_frame.inner_frame._choice_color(self.board[start_x][start_y])
-                color = "white"
+                color = "green"
                 target_label.configure(fg_color=color)
                 labels[start_x][start_y] = target_label
 
-            print(self.board)
 
             self.time_current+=1
             self.label_time_current.configure(text=f"Tempo Atual: {self.time_current}")
             self.after(1000, self.update)  # Delay de 1 segundo entre as atualizações
 
-
-    def deep_search_clean(self):
-        map = [get_robot_position(self.board)]  # Mapa e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
+    def DFS(self):
+        stack = [get_robot_position(self.board)]  # stacka e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
         visited = set()  # Células visitadas
-        to_clean = set() # Células que precisam ser limpas
 
         def next_move():
-            if map: # Checar se a pilha não está vazia
-                cell_x, cell_y = map.pop() # Obter a próxima célula a ser visitada
+            print(f"Pilha: {stack}\nVisitados: {visited}")
+            if len(stack) > 0:  # Checar se a pilha não está vazia
+                cell_x, cell_y = stack.pop()  # Obter a próxima célula a ser visitada
 
-                if in_board(self.board, cell_x, cell_y): # Checar se a célula está dentro do tabuleiro
+                if in_board(self.board, cell_x, cell_y):  # Checar se a célula está dentro do tabuleiro
 
-                    if (cell_x, cell_y) not in visited: # Checar se a célula já foi visitada, caso não tenha sido, vamos visitala
-                        visited.add((cell_x, cell_y)) # Adicionar a célula atual ao conjunto de visitados
+                    if (cell_x, cell_y) not in visited:  # Checar se a célula já foi visitada, caso não tenha sido, vamos visitá-la
+                        visited.add((cell_x, cell_y))  # Adicionar a célula atual ao conjunto de visitados
 
-                        if can_clean(self.board, cell_x, cell_y) and (cell_x, cell_y) in to_clean: # Checar se a célula atual pode e deve ser limpa
-                            direction = get_diretion(cell_x,cell_y)
+                        if can_clean(self.board, cell_x, cell_y):
+
+                            x, y = get_robot_position(self.board)
+                            direction = get_diretion((x, y), cell_x, cell_y)
                             print(direction)
-                            move(self.board, cell_x, cell_y, direction)
-                            to_clean.remove((cell_x, cell_y))
+                            if move(self.board, x, y, direction):
+                                print(f"Linha 119: {self.board}")
+                                self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
 
-                            self.animate_movement(get_robot_position(self.board), cell_x, cell_y)
-
-                        for direction_x, direction_y in MOVES.values(): # Percorrer as direções possíveis
+                        for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
 
                             new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
 
-                            if in_board(self.board, new_position_x, new_position_y) : # Se a direção for válida (Estiver dentro do tabuleiro)
-
-                                if can_clean(self.board, new_position_x, new_position_y): # Caso a celula possa ser limpa, salvamos ela na pilha para voltar depois
-
-                                    to_clean.add((new_position_x, new_position_y))
-
-                                    map.append((new_position_x, new_position_y))
-
-                        self.after(2000, next_move)  # Atraso de 500ms antes do próximo movimento
+                            if in_board(self.board, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
+                                stack.append((new_position_x, new_position_y))
+                        print("fiz um ciclo")
+                        self.after(1000, next_move)  # Atraso antes do próximo movimento
+                    else:
+                        print(f"Já foi Visitada: X:{cell_x}, Y:{cell_y}")
+                else:
+                    print(f"Fora do Tabuleiro: X: {cell_x}, Y: {cell_y}")
+            else:
+                print("Pilha vazia, finalizando a limpeza.")
 
         next_move()  # Iniciar o loop de movimentos
+        print("Finalizei")
+
+
+ 
