@@ -13,8 +13,8 @@ def generate_board(lines:int, columns:int) -> list[list]:
 
 def generate_obstacles(board:list[list], num_blocks:int) -> None:
     
-    width = len(board)
-    height = len(board[0])
+    height = len(board)
+    width = len(board[0])
     
     if num_blocks > width * height:
         raise ValueError("Número de obstáculos maior que o número de posições do tabuleiro")
@@ -34,6 +34,20 @@ def board_size(board: list[list[int]]) -> tuple[int, int]:
         - board: list[list[int]] -> Tabuleiro
     
     - Return:
-        - tuple[int, int]: Tupla com a quantidade de linhas e colunas (X, Y)
+        - tuple[int, int]: Tupla com a quantidade de colunas e linhas (X, Y)
     """
-    return len(board), len(board[0])
+    return len(board[0]), len(board)
+
+
+def show_board(board: list[list[int]]) -> None:
+    """
+    Mostra o tabuleiro
+
+    - Args:
+        - board: list[list[int]] -> Tabuleiro
+    
+    - Return:
+        - None
+    """
+    for line in board:
+        print(line)

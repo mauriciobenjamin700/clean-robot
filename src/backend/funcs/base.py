@@ -1,3 +1,9 @@
+"""
+Legend:
+ - x == width / columns
+ - y == height / lines
+"""
+
 from random import randint
 
 

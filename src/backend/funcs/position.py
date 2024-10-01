@@ -23,8 +23,8 @@ def generate_position(board:list[list]) -> tuple[int, int]:
     """
     Gerar uma posição aleatória no tabuleiro.
     """
-    width = len(board)
-    height = len(board[0])
+    height = len(board)
+    width = len(board[0])
     
     x = gerenate_random_number(0, width - 1)
     y = gerenate_random_number(0, height - 1)
@@ -44,7 +44,7 @@ def in_board(board:list[list], x:int, y:int) -> bool:
     lines = len(board)
     columns = len(board[0])
     
-    return 0 <= x < lines and 0 <= y < columns
+    return 0 <= x < columns and 0 <= y < lines
 
     
 def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) -> bool:
@@ -73,6 +73,8 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
 def get_robot_position(board:list[list]) -> tuple[int, int]:
     """
     obtem a posição do robo
+
+    retorna y e x
     """
     lines = len(board)
     columns = len(board[0])
@@ -105,8 +107,8 @@ def can_move(board:list[list[int]], x:int, y:int) -> bool:
 
     - Args:
         - board:: list[list[int]]: Tabuleiro
-        - x::int: posicao na linha
-        - y:: int: posicao na coluna
+        - x::int: posicao na coluna
+        - y:: int: posicao na linha
     """
 
     if not in_board(board,x,y): # Checando se a posição é válida
@@ -125,8 +127,8 @@ def get_direction(robot: tuple[int, int], x: int, y: int) -> Literal['right', 'l
     Retorna a direção para movimentar
 
     - Args:
-      - x: int: Altura
-      - y: int: Largura
+      - x: int: largura
+      - y: int: altura
     """
 
     robot_x, robot_y = robot
@@ -134,14 +136,14 @@ def get_direction(robot: tuple[int, int], x: int, y: int) -> Literal['right', 'l
     if robot_x == x:
         if robot_y == y:
             return "invalid"
-        elif robot_y < y:
+        elif robot_y < y: # Caso o atual seja menor que o destino, direita
             return "right"
-        elif robot_y > y:
+        elif robot_y > y: # Caso o atual seja maior que o destino, esquerda
             return "left"
     elif robot_y == y:
         if robot_x < x:
-            return "down"
-        elif robot_x > x:
+            return "down" # Caso o atual seja menor que o destino, descer
+        elif robot_x > x: # Caso o atual seja maior que o destino, subir
             return "up"
 
     print(f"Robo: {robot_x} and {robot_y}\nx = {x} and y = {y}")
@@ -153,8 +155,8 @@ def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right
 
     - Args:
       - board:: list[list[int]]: Tabuleiro
-      - x::int : Posição X do Robô
-      - y::int : Posição Y do Robô
+      - x::int : Posição X do Robô (Coluna)
+      - y::int : Posição Y do Robô (Linha)
       - direction::str: Direção para mover o robo
 
     """

@@ -54,7 +54,6 @@ class App(CTk):
         self.home.central_frame.button_left.bind("<Button-1>", self._exit)
         self.home.central_frame.button_right.bind("<Button-1>", self.home_to_board)
 
-
     def home_to_board(self, event=None):
         width = self.home.entry_WIDTH.get()
         height = self.home.entry_HEIGHT.get()

@@ -1,25 +1,20 @@
 from customtkinter import (
     CTkFrame,
-    CTkLabel
 )
-from collections import deque
-from time import sleep
+
 
 
 from src.frontend.components.entry import Entry
 from src.frontend.components.label import Label
 from src.frontend.components.board import BorderFrame, generate_chess_board
 from src.frontend.styles.colors.page import SCREEN
-from src.frontend.styles.configs.position import center_window, align_frame_center
 
 
 from src.backend.funcs.position import (
     can_clean,
     can_move,
-    clean,
     get_robot_position,
     in_board,
-    is_clean,
     move,
     get_direction
 )
@@ -61,9 +56,9 @@ class CleaningScreen(CTkFrame):
         """
         Animação de movimento ao trocar de lugar uma peça
         """
-        heigh, width = board_size(self.board)
-        for x in range(0, heigh,1):
-            for y in range(0, width,1):
+        column, line = board_size(self.board)
+        for x in range(0, column,1):
+            for y in range(0, line,1):
 
                 if in_board(self.board, x, y):
                     color = self.central_frame.inner_frame._choice_color(self.board[x][y])
@@ -90,7 +85,7 @@ class CleaningScreen(CTkFrame):
 
                     if can_clean(self.board, cell_x, cell_y):
 
-                        x, y = get_robot_position(self.board)
+                        y, x = get_robot_position(self.board)
                         direction = get_direction((x, y), cell_x, cell_y)
                         print(direction)
                         if move(self.board, x, y, direction):
