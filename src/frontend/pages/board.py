@@ -23,8 +23,7 @@ class BoardScreen(CTkFrame):
         self.entry_frame.pack(side="right", anchor="e", padx=10, pady=10)
 
         self.entry_quantity = Entry(self.entry_frame, placeholder_text="Quantidade")
-        self.entry_quantity.pack(padx=10, pady=5)
-
+        self.entry_quantity.pack(padx=15, pady=5)
 
 
 

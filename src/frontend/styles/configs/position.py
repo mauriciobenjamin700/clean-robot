@@ -47,8 +47,10 @@ def align_frame_center(master:CTk, frame: CTkFrame, offset_x=0, offset_y=0):
     frame_height = frame.winfo_height()
     master_width = master.winfo_width()
     master_height = master.winfo_height()
-    position_x = (master_width // 2) - (frame_width // 2) + int(master_width * offset_x)
-    position_y = (master_height // 2) - (frame_height // 2) + int(master_height * offset_y)
+    position_x = (master_width // 8) + int(master_width * offset_x)
+    position_y = (master_height // 10) + int(master_height * offset_y)
+    # position_x = (master_width // 2) - (frame_width // 2) + int(master_width * offset_x)
+    # position_y = (master_height // 2) - (frame_height // 2) + int(master_height * offset_y)
     frame.place(x=position_x, y=position_y)
 
 def align_frame_top(master:CTk, frame: CTkFrame, offset_x=0, offset_y=0):
