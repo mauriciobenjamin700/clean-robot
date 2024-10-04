@@ -10,7 +10,6 @@ from src.frontend.components.entry import Entry
 from src.frontend.components.label import Label
 from src.frontend.components.board import BorderFrame, generate_chess_board
 from frontend.styles.page import SCREEN
-from src.frontend.styles.configs.position import center_window, align_frame_center
 
 
 from src.backend.funcs.position import (
