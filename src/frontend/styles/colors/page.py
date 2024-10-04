@@ -1,2 +1,0 @@
-WINDOW = "#FFFFFF"
-SCREEN = "#EAE7E7"

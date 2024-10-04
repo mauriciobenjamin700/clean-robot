@@ -3,7 +3,7 @@ from customtkinter import CTkFrame
 
 from src.frontend.components.entry import Entry
 from src.frontend.components.board import BorderFrame, generate_chess_board
-from src.frontend.styles.colors.page import SCREEN
+from frontend.styles.page import SCREEN
 
 
 class BoardScreen(CTkFrame):

@@ -15,7 +15,7 @@ from src.frontend.pages.home import HomeScreen
 from src.frontend.pages.board import BoardScreen
 from src.frontend.pages.robot import RobotScreen
 from src.frontend.pages.cleaning import CleaningScreen
-from src.frontend.styles.colors.page import SCREEN
+from frontend.styles.page import SCREEN
 from src.frontend.styles.configs.position import (
     center_window,
     align_frame_center,

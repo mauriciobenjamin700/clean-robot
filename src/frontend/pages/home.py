@@ -6,7 +6,7 @@ from customtkinter import CTkFrame, CTkLabel
 from src.frontend.components.div import CentralFrame
 from src.frontend.components.entry import Entry
 from src.frontend.styles.colors.label import TEXT, TEXT_STYLE
-from src.frontend.styles.colors.page import SCREEN
+from frontend.styles.page import SCREEN
 
 
 class HomeScreen(CTkFrame):
