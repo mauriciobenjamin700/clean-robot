@@ -15,6 +15,7 @@ from src.frontend.configs.position import (
 from src.frontend.components.button import Button
 from src.frontend.components.label import Label
 from src.frontend.components.entry import Entry
+from src.frontend.components.frame import RightFrame
 
 def HomePage(app: CTk):
 
@@ -25,9 +26,11 @@ def HomePage(app: CTk):
     frame.place(x=x, y=y)
 
     # Frame do menu à direita
-    right_menu_width = 200  # Defina a largura do menu à direita
+    right_menu_width = 300  # Defina a largura desejada para o menu à direita
     right_menu_height = app.winfo_height()  # Altura do menu à direita igual à altura da aplicação
-    right_menu = CTkFrame(app, width=right_menu_width, height=right_menu_height)
+    right_menu = RightFrame(app)
+    
+    # Posiciona o frame do menu à direita
     right_x, right_y = align_right(app.winfo_width(), app.winfo_height(), right_menu_width, right_menu_height)
     right_menu.place(x=right_x, y=right_y)
 
@@ -42,6 +45,6 @@ def HomePage(app: CTk):
     label2.grid(row=2, column=0, padx=10, pady=5)
     entry2.grid(row=3, column=0, padx=10, pady=5)
 
-
-
     app.main_frame = frame
+    app.right_menu = right_menu
+

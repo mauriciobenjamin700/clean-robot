@@ -11,3 +11,9 @@ configs_inner = {
     "height": 400,
     
 }
+
+configs_right = {
+    "fg_color": "#FFFFFF",
+    "width": 320,
+    "height": 720,
+}
