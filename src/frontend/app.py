@@ -10,9 +10,16 @@ from tkinter.messagebox import(
 from src.frontend.styles.page import configs
 from src.frontend.configs.position import align_center
 from src.frontend.pages.home import HomePage
-from src.frontend.pages.board import Board
-
-from src.backend.funcs.board import generate_board
+from src.frontend.pages.board import (
+    Board,
+    Obstacles,
+    Robot
+)
+from src.backend.funcs.position import remove_robot
+from src.backend.funcs.board import (
+    generate_board,
+    remove_obstacles
+)
 
 class App(CTk):
     def __init__(self):
@@ -47,6 +54,7 @@ class App(CTk):
                 showinfo("Informação", "Tabuleiro Gerado com Sucesso")
                 Board(self)
                 self.button_left.configure(command=self._board_to_home)
+                self.button_right.configure(command=self._place_obstacles)
             else:
                 showerror("Erro", "Os valores devem ser maiores que 0")
         else:
@@ -57,4 +65,46 @@ class App(CTk):
         self.button_right.configure(command=self._home_to_board)
         self.button_left.configure(command=self._exit)
 
+    def _place_obstacles(self, event=None):
+        num_obstacles:str = self.entry_width.get()
+
+        if num_obstacles.isnumeric():
+            num_obstacles = int(num_obstacles)
+            if num_obstacles >= 0:
+                Obstacles(self, num_obstacles)
+                self.button_left.configure(command=self._remove_obstacles)
+                self.button_right.configure(command=self._place_robot)
+            else:
+                showerror("Erro", "O valor deve ser positivo")
+        else:
+            showerror("Erro", "O valor deve ser numérico")
+
+    def _remove_obstacles(self, event=None):
+        remove_obstacles(self.matrix)
+        Board(self)
+        self.button_left.configure(command=self._board_to_home)
+        self.button_right.configure(command=self._place_obstacles)
+        self.label_width.pack()
+        self.entry_width.pack()
+
+
+    def _place_robot(self, event=None):
+        Robot(self)
+        self.button_left.configure(command=self._remove_robot)
+        self.button_right.configure(command=self._start_cleaning)
+
+    def _remove_robot(self, event=None):
+        remove_robot(self.matrix)
+        self._place_obstacles()
+
+    def _start_cleaning(self, event=None):
+        time_limit:str = self.entry_width.get()
+        if time_limit.isnumeric():
+            time_limit = int(time_limit)
+            if time_limit > 0:
+                self._clean()
+            else:
+                showerror("Erro", "O tempo limite deve ser maior que 0")
+        else:
+            showerror("Erro", "O tempo limite deve ser numérico")
     

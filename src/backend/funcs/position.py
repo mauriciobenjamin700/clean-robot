@@ -69,6 +69,31 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
             raise ValueError("Tipo inválido")
     return result
 
+def has_space(board:list[list]) -> bool:
+    """
+    Verifica se ainda há espaço no tabuleiro
+    """
+    for line in board:
+        for item in line:
+            if item == TRASH:
+                return True
+    return False
+
+def place_robot(board:list[list]) -> bool:
+    """
+    Coloca o robo no tabuleiro
+    """
+
+    if not has_space(board):
+        return False
+
+    while True:
+        x, y = generate_position(board)
+
+        if place(board, x, y, "robot"):
+            break
+
+    return True
 
 def get_robot_position(board:list[list]) -> tuple[int, int]:
     """

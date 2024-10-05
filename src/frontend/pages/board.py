@@ -10,6 +10,9 @@ from src.backend.funcs.board import(
     board_size,
     generate_obstacles
 )
+from src.backend.funcs.position import(
+    place_robot
+)
 from src.backend.constants.main import(
     CLEAN,
     TRASH,
@@ -45,6 +48,9 @@ def Board(app: CTk):
     app.button_right.configure(text="Gerar Obstáculos")
 
     app.label_width.configure(text="Quantidade")
+    app.entry_width.delete(0, "end")
+    app.entry_width.insert(0, '0')
+
 
     app.label_height.pack_forget()
     app.entry_height.pack_forget()
@@ -61,6 +67,18 @@ def Obstacles(app: CTk, num_obstacles: int):
         app.entry_width.pack_forget()
     else:
         showinfo("Erro", "Número de obstáculos maior que o tamanho do tabuleiro")
+
+def Robot(app):
+    if place_robot(app.matrix):
+        _refrash_board(app, app.matrix)
+        app.button_right.configure(text="Iniciar Limpeza")
+        app.label_width.configure(text="Tempo Limite")
+        app.label_width.pack()
+        app.entry_width.delete(0, "end")
+        app.entry_width.insert(0, '0')
+        app.entry_width.pack()
+    else:
+        showinfo("Erro", "Não foi possível colocar o robô no tabuleiro")
 def _refrash_board(app: CTk, matrix: list[list[int]]):
     for line in range(len(matrix)):
         for column in range(len(matrix[0])):

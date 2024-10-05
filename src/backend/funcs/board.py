@@ -1,4 +1,7 @@
-from src.backend.constants.main import TRASH
+from src.backend.constants.main import (
+    OBSTACLE,
+    TRASH
+)
 from src.backend.funcs.position import(
     generate_position,
     place
@@ -27,6 +30,14 @@ def generate_obstacles(board:list[list], num_blocks:int) -> bool:
             x, y = generate_position(board)
 
     return True
+
+def remove_obstacles(board:list[list]):
+    
+    for line in range(len(board)):
+        for column in range(len(board[0])):
+            if board[line][column] == OBSTACLE:
+                board[line][column] = TRASH
+    
 
 def board_size(board: list[list[int]]) -> tuple[int, int]:
     """
