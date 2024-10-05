@@ -7,7 +7,10 @@ from customtkinter import (
 )
 
 
-from src.frontend.styles.frame import configs_central as configs
+from src.frontend.styles.frame import (
+    configs_central as configs,
+    configs_right
+)
 from src.frontend.configs.position import (
     align_center,
     align_right
@@ -25,25 +28,25 @@ def HomePage(app: CTk):
     x,y = align_center(app.winfo_width(), app.winfo_height(), configs["width"], configs["height"])
     frame.place(x=x, y=y)
 
-    # Frame do menu à direita
-    right_menu_width = 300  # Defina a largura desejada para o menu à direita
-    right_menu_height = app.winfo_height()  # Altura do menu à direita igual à altura da aplicação
+
     right_menu = RightFrame(app)
+    #right_menu.configure(fg_color="red")
     
-    # Posiciona o frame do menu à direita
-    right_x, right_y = align_right(app.winfo_width(), app.winfo_height(), right_menu_width, right_menu_height)
+    right_x, right_y = align_right(app.winfo_width(), app.winfo_height(),configs_right["width"], configs_right["height"])
     right_menu.place(x=right_x, y=right_y)
 
-    # Adicionando widgets ao frame do menu à direita
-    label1 = Label(right_menu, text="Label 1")
-    entry1 = Entry(right_menu)
-    label2 = Label(right_menu, text="Label 2")
-    entry2 = Entry(right_menu)
+    #right_menu.pack_propagate(False)
+    #right_menu.grid_propagate(False)
+    
+    label_width = Label(right_menu, text="Largura")
+    label_width.pack(fill='x', padx=10, pady=5)
+    entry_width = Entry(right_menu)
+    entry_width.pack(fill='x', padx=10, pady=5)
+    label_height = Label(right_menu, text="Altura")
+    label_height.pack(fill='x', padx=10, pady=5)
+    entry_height = Entry(right_menu)
+    entry_height.pack(fill='x', padx=10, pady=5)
 
-    label1.grid(row=0, column=0, padx=10, pady=5)
-    entry1.grid(row=1, column=0, padx=10, pady=5)
-    label2.grid(row=2, column=0, padx=10, pady=5)
-    entry2.grid(row=3, column=0, padx=10, pady=5)
 
     app.main_frame = frame
     app.right_menu = right_menu

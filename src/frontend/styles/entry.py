@@ -1,6 +1,6 @@
 config = {
     "fg_color": "#D9D9D9",
-    "text_color": "#D9D7D7",  # Inicialmente, a cor do texto é a cor do placeholder
+    "text_color": "#000000",  # Inicialmente, a cor do texto é a cor do placeholder
     "font": ("Inknut Antiqua", 20),
     "corner_radius": 6,
     "border_color": "gray",
