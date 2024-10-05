@@ -95,6 +95,9 @@ class App(CTk):
 
     def _remove_robot(self, event=None):
         remove_robot(self.matrix)
+        self.label_height.pack_forget()
+        self.entry_width.delete(0, "end")
+        self.entry_width.insert(0, '0')
         self._place_obstacles()
 
     def _start_cleaning(self, event=None):
