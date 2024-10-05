@@ -28,12 +28,6 @@ def generate_obstacles(board:list[list], num_blocks:int) -> None:
 
 def board_size(board: list[list[int]]) -> tuple[int, int]:
     """
-    Retorna uma tupla com a quantidade de linhas e colunas
-
-    - Args:
-        - board: list[list[int]] -> Tabuleiro
-    
-    - Return:
-        - tuple[int, int]: Tupla com a quantidade de linhas e colunas (X, Y)
+    return the size of the board in x (width), y[height] coordinates
     """
-    return len(board), len(board[0])
+    return len(board[0]), len(board)

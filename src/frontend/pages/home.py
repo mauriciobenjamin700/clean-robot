@@ -63,5 +63,17 @@ def HomePage(app: CTk):
     button_right.pack(side="right", padx=10, pady=5)
 
     app.main_frame = frame
+
     app.right_menu = right_menu
+
+    app.label_width = label_width
+    app.entry_width = entry_width
+    
+    app.label_height = label_height
+    app.entry_height = entry_height
+
     app.buttons = buttons
+
+    app.button_left = button_left
+    app.button_right = button_right
+
