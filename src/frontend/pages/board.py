@@ -1,15 +1,14 @@
-from cProfile import label
-from typing import Literal
 from customtkinter import(
     CTk,
-    CTkFrame,
-    CTkLabel
+    CTkFrame
 )
-
+from typing import Literal
+from tkinter.messagebox import showinfo
 
 
 from src.backend.funcs.board import(
-    board_size
+    board_size,
+    generate_obstacles
 )
 from src.backend.constants.main import(
     CLEAN,
@@ -20,8 +19,8 @@ from src.backend.constants.main import(
 from src.frontend.styles.frame import configs_central as configs
 
 
-def Board(app: CTk,frame_to_build: CTkFrame, matrix: list[list[int]]):
-
+def Board(app: CTk):
+    matrix = app.matrix
     x, y = board_size(matrix)
 
     frame_width = configs["width"] // x
@@ -33,7 +32,7 @@ def Board(app: CTk,frame_to_build: CTkFrame, matrix: list[list[int]]):
         frames_in_line = []
         for column in range(x):
             color = _choice_color(matrix[line][column])
-            square = CTkFrame(frame_to_build, width=frame_width, height=frame_height, fg_color=color, border_width=2, border_color="white")
+            square = CTkFrame(app.main_frame, width=frame_width, height=frame_height, fg_color=color, border_width=2, border_color="white")
             square.grid(row=line, column=column)
             frames_in_line.append(square)
 
@@ -51,6 +50,17 @@ def Board(app: CTk,frame_to_build: CTkFrame, matrix: list[list[int]]):
     app.entry_height.pack_forget()
     #app.right_menu.place_forget()
 
+
+def Obstacles(app: CTk, num_obstacles: int):
+    
+    if generate_obstacles(app.matrix, num_obstacles):
+        _refrash_board(app, app.matrix)
+        app.button_right.configure(text="Gerar Robô")
+
+        app.label_width.pack_forget()
+        app.entry_width.pack_forget()
+    else:
+        showinfo("Erro", "Número de obstáculos maior que o tamanho do tabuleiro")
 def _refrash_board(app: CTk, matrix: list[list[int]]):
     for line in range(len(matrix)):
         for column in range(len(matrix[0])):

@@ -33,20 +33,28 @@ class App(CTk):
         self.button_right.configure(command=self._home_to_board)
         self.button_left.configure(command=self._exit)
 
-    def _home_to_board(self):
+    def _exit(self):
+        self.destroy()
+
+    def _home_to_board(self, event=None):
         width, height = self.entry_width.get(), self.entry_height.get()
-        print(f"width: {width}, height: {height}")
 
         if width.isnumeric() and height.isnumeric():
             width = int(width)
             height = int(height)
             if width > 0 and height > 0:
                 self.matrix = generate_board(height, width)
-                Board(self, self.main_frame, self.matrix)
+                showinfo("Informação", "Tabuleiro Gerado com Sucesso")
+                Board(self)
+                self.button_left.configure(command=self._board_to_home)
             else:
                 showerror("Erro", "Os valores devem ser maiores que 0")
         else:
             showerror("Erro", "Os valores devem ser numéricos")
 
-    def _exit(self):
-        self.destroy()
+    def _board_to_home(self, event=None):
+        HomePage(self)
+        self.button_right.configure(command=self._home_to_board)
+        self.button_left.configure(command=self._exit)
+
+    
