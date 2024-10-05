@@ -1,4 +1,3 @@
-from operator import ge
 from customtkinter import CTk
 from tkinter.messagebox import(
     showinfo,
@@ -13,7 +12,8 @@ from src.frontend.pages.home import HomePage
 from src.frontend.pages.board import (
     Board,
     Obstacles,
-    Robot
+    Robot,
+    Start
 )
 from src.backend.funcs.position import remove_robot
 from src.backend.funcs.board import (
@@ -102,9 +102,11 @@ class App(CTk):
         if time_limit.isnumeric():
             time_limit = int(time_limit)
             if time_limit > 0:
-                self._clean()
+                Start(self, time_limit)
             else:
                 showerror("Erro", "O tempo limite deve ser maior que 0")
         else:
             showerror("Erro", "O tempo limite deve ser numérico")
     
+
+
