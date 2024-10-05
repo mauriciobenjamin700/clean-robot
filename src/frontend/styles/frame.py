@@ -17,3 +17,9 @@ configs_right = {
     "width": 200,
     "height": 400,
 }
+
+configs_botton = {
+    "fg_color": "#FFFFFF",
+    "width": 600,
+    "height": 80,
+}

@@ -13,3 +13,11 @@ def align_right(parent_width, parent_height, child_width, child_height):# -> tup
     x = parent_width - child_width
     y = (parent_height - child_height) // 2
     return x, y
+
+def align_botton(parent_width, parent_height, child_width, child_height):# -> tuple:
+    """
+    return x, y right position of child in parent
+    """
+    x = (parent_width - child_width) // 2
+    y = parent_height - child_height
+    return x, y

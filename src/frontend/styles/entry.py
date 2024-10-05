@@ -6,6 +6,6 @@ config = {
     "border_color": "gray",
     "border_width": 2,
     "justify": "center",
-    "height": 200,
-    "width": 80,
+    "height": 80,
+    "width": 200,
 }
