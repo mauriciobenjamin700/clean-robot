@@ -13,6 +13,7 @@ from src.backend.funcs.board import(
 from src.backend.funcs.position import(
     can_clean,
     can_move,
+    dfs,
     get_direction,
     get_robot_position,
     in_board,
@@ -92,61 +93,61 @@ def Robot(app):
 def Start(app: CTk, time_limit: int):
 
     app.time = time_limit
-    DFS(app)
+    dfs(app.matrix, _refrash_board, app)
 
 
-def DFS(app: CTk):
-    stack = [get_robot_position(app.matrix)]  # stacka e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
-    visited = set()  # Células visitadas
+# def DFS(app: CTk):
+#     stack = [get_robot_position(app.matrix)]  # stacka e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
+#     visited = set()  # Células visitadas
 
-    def next_move():
-        print(f"Pilha: {stack}\nVisitados: {visited}")
-        if len(stack) > 0:  # Checar se a pilha não está vazia
-            cell_x, cell_y = stack.pop()  # Obter a próxima célula a ser visitada
+#     def next_move():
+#         print(f"Pilha: {stack}\nVisitados: {visited}")
+#         if len(stack) > 0:  # Checar se a pilha não está vazia
+#             cell_x, cell_y = stack.pop()  # Obter a próxima célula a ser visitada
 
-            if in_board(app.matrix, cell_x, cell_y):  # Checar se a célula está dentro do tabuleiro
+#             if in_board(app.matrix, cell_x, cell_y):  # Checar se a célula está dentro do tabuleiro
 
-                if (cell_x, cell_y) not in visited:  # Checar se a célula já foi visitada, caso não tenha sido, vamos visitá-la
-                    visited.add((cell_x, cell_y))  # Adicionar a célula atual ao conjunto de visitados
+#                 if (cell_x, cell_y) not in visited:  # Checar se a célula já foi visitada, caso não tenha sido, vamos visitá-la
+#                     visited.add((cell_x, cell_y))  # Adicionar a célula atual ao conjunto de visitados
 
-                if can_clean(app.matrix, cell_x, cell_y):
+#                 if can_clean(app.matrix, cell_x, cell_y):
 
-                    x, y = get_robot_position(app.matrix)
-                    direction = get_direction((x, y), cell_x, cell_y)
-                    print(direction)
-                    if move(app.matrix, x, y, direction):
-                        print(f"Linha 119: {app.matrix}")
+#                     x, y = get_robot_position(app.matrix)
+#                     direction = get_direction((x, y), cell_x, cell_y)
+#                     print(direction)
+#                     if move(app.matrix, x, y, direction):
+#                         print(f"Linha 119: {app.matrix}")
                         
-                    _refrash_board(app, app.matrix)
-                else:
-                    print(f"Já foi Visitada: X:{cell_x}, Y:{cell_y}")
+#                     _refrash_board(app, app.matrix)
+#                 else:
+#                     print(f"Já foi Visitada: X:{cell_x}, Y:{cell_y}")
                 
 
-            else:
-                print(f"Fora do Tabuleiro: X: {cell_x}, Y: {cell_y}")
+#             else:
+#                 print(f"Fora do Tabuleiro: X: {cell_x}, Y: {cell_y}")
 
 
-            for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
+#             for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
 
-                new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
+#                 new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
 
-                if in_board(app.matrix, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
-                    if can_move(app.matrix, new_position_x, new_position_y):
-                        stack.append((new_position_x, new_position_y))
+#                 if in_board(app.matrix, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
+#                     if can_move(app.matrix, new_position_x, new_position_y):
+#                         stack.append((new_position_x, new_position_y))
 
-            app.time -=1
-            app.label_height.configure(text=f"Tempo Atual: {app.time}")
+#             app.time -=1
+#             app.label_height.configure(text=f"Tempo Atual: {app.time}")
 
-            if app.time < 0:
-                showinfo("Fim", "Tempo esgotado")
-                return
-            app.after(1000, next_move)  # Atraso antes do próximo movimento
+#             if app.time < 0:
+#                 showinfo("Fim", "Tempo esgotado")
+#                 return
+#             app.after(1000, next_move)  # Atraso antes do próximo movimento
 
-        else:
-            print("Pilha vazia, finalizando a limpeza.")
+#         else:
+#             print("Pilha vazia, finalizando a limpeza.")
 
-    next_move()  # Iniciar o loop de movimentos
-    print("Finalizei")
+#     next_move()  # Iniciar o loop de movimentos
+#     print("Finalizei")
 
 
 

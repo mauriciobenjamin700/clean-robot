@@ -224,7 +224,7 @@ def bfs(board: list[list[int]], start: tuple[int, int], goal: tuple[int, int]):
 
 
 
-def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board: Callable, visited: set ) -> list[list[int]]:
+def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board: Callable, visited: set, app = None ) -> list[list[int]]:
     """
     move the robot to the new position
     """
@@ -237,7 +237,7 @@ def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board:
         if can_move(board, new_position):
             board[robot_y][robot_x] = CLEAN
             board[y][x] = ROBOT
-            show_board(board)
+            show_board(app, board)
         else:
             path = bfs(board, (robot_x, robot_y), new_position)
 
@@ -246,12 +246,12 @@ def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board:
                 x, y = position
                 board[robot_y][robot_x] = CLEAN
                 board[y][x] = ROBOT
-                show_board(board)
+                show_board(app, board)
    
 
     return board
 
-def dfs(board: list[list[int]]):
+def dfs(board: list[list[int]], show_board: Callable, app = None):
 
     visited = set([])
 
@@ -259,6 +259,6 @@ def dfs(board: list[list[int]]):
 
     while len(stack) > 0:
         next = get_next_move(stack)
-        board = move_robot(board, next)
+        board = move_robot(board, next, show_board, visited, app)
         moves = generate_moves(board)
-        stack = stack_movies(stack, moves)
+        stack = stack_movies(stack, moves, visited)
