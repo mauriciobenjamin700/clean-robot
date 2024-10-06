@@ -6,9 +6,11 @@
 - gerenate_random_number: Gera um número aleatório.
 
 """
-from typing import Literal
+from collections import deque
+from typing import Callable, Literal
 
 
+from src.backend.funcs.board import get_board_sizes
 from src.backend.constants.main import (
     OBSTACLE,
     ROBOT,
@@ -32,19 +34,65 @@ def generate_position(board:list[list]) -> tuple[int, int]:
     return x, y
 
 
-def in_board(board:list[list], x:int, y:int) -> bool:
+def in_board(board: list[list[int]], position: tuple[int,int]) -> bool:
     """
-    Verifica se a posição está dentro do tabuleiro.
+    return True if the position is in the board
+    """
+    width, height = get_board_sizes(board)
+    x, y = position
 
-    - Args:
-      - board:Tabuleiro
-      - x:: line index
-      - y:: column index
+    return 0 <= x < width and 0 <= y < height
+
+def is_valid_position(board: list[list[int]], position: tuple[int,int]) -> bool:
     """
-    lines = len(board)
-    columns = len(board[0])
+    return True if the position is valid
+    """
+
+    if not position:
+        return False
     
-    return 0 <= x < lines and 0 <= y < columns
+    if in_board(board, position):
+        x, y = position
+        if board[y][x] != OBSTACLE and board[y][x] != ROBOT:
+            return True
+    return False
+
+def generate_moves(board: list[list[int]]) -> list[tuple[int,int]]:
+    """
+    return a list of valid moves [up, down, left, right] in tuple format (x, y)
+    """
+    robot = get_robot(board)
+
+    moves = []
+
+    for name in MOVES.keys():
+        new_position = new_robot_position(robot, name)
+
+        if is_valid_position(board, new_position):
+            moves.append(new_position)
+
+    return moves
+
+def stack_movies(stack:list, movies: list[tuple[int]], visited: set) -> list:
+    """
+    add movies to the stack
+    """
+    movies.reverse()
+
+    for move in movies:
+        if move not in stack and (not move in visited):
+            stack.insert(0, move)
+
+    return stack
+
+def get_next_move(stack: list) -> tuple[int, int] | None:
+    """
+    return the next move
+    """
+    move = None
+    if len(stack) > 0:
+        move = stack.pop(0)
+    return move
 
     
 def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) -> bool:
@@ -95,19 +143,21 @@ def place_robot(board:list[list]) -> bool:
 
     return True
 
-def get_robot_position(board:list[list]) -> tuple[int, int]:
+def get_robot(board: list[list[int]])-> tuple[int,int]:
     """
-    obtem a posição do robo
+    return the position x,y of the robot
     """
-    lines = len(board)
-    columns = len(board[0])
-    
-    for l in range(0,lines,1):
-        for c in range(0,columns,1):
-            if board[l][c] == ROBOT:
-                return l, c
+
+    width, height = get_board_sizes(board)
+
+    for line in range(height):
+
+        for column in range(width):
+
+            if board[line][column] == ROBOT:
+                return (column, line)
             
-    raise ValueError("Robô não encontrado")
+    raise ValueError("Robot not found")
 
 
 def remove_robot(board:list[list[int]]) -> bool:
@@ -115,7 +165,7 @@ def remove_robot(board:list[list[int]]) -> bool:
     remove o robo
     """
     try:
-        robot = get_robot_position(board)
+        robot = get_robot(board)
 
         board[robot[0]][robot[1]] = TRASH
 
@@ -124,130 +174,91 @@ def remove_robot(board:list[list[int]]) -> bool:
     except:
         return False
 
-def can_move(board:list[list[int]], x:int, y:int) -> bool:
+def new_robot_position(robot: tuple[int,int], direction: str) -> tuple[int,int]:
     """
-    Chack se pode mover
-
-    - Args:
-        - board:: list[list[int]]: Tabuleiro
-        - x::int: posicao na linha
-        - y:: int: posicao na coluna
+    return the new x, y position of the robot
     """
+    x, y = robot
+    dx, dy = MOVES[direction]
 
-    if not in_board(board,x,y): # Checando se a posição é válida
-        return False
-    
-    elif board[x][y] == OBSTACLE:
-        return  False
-    
-    elif board[x][y] == ROBOT:
-        return False
-    
-    return True
+    return (x + dx, y + dy)
 
-def get_direction(robot: tuple[int, int], x: int, y: int) -> Literal['right', 'left', 'down', 'up', 'invalid']:
+def can_move(board: list[list[int]], position: tuple[int,int]) -> bool:
     """
-    Retorna a direção para movimentar
-
-    - Args:
-      - x: int: Altura
-      - y: int: Largura
+    return True if the robot can move
     """
 
-    robot_x, robot_y = robot
+    if is_valid_position(board, position):
 
-    if robot_x == x:
-        if robot_y == y:
-            return "invalid"
-        elif robot_y < y:
-            return "right"
-        elif robot_y > y:
-            return "left"
-    elif robot_y == y:
-        if robot_x < x:
-            return "down"
-        elif robot_x > x:
-            return "up"
-
-    print(f"Robo: {robot_x} and {robot_y}\nx = {x} and y = {y}")
-    return "invalid"
-
-def move(board:list[list], x:int, y:int, direction: Literal["up", "down", "right", "left"]) -> bool:
-    """
-    Tenta mover o robo e caso falhe, retorna False
-
-    - Args:
-      - board:: list[list[int]]: Tabuleiro
-      - x::int : Posição X do Robô
-      - y::int : Posição Y do Robô
-      - direction::str: Direção para mover o robo
-
-    """
-    if direction in MOVES.keys():
-            
-        
-        oldx = x
-        oldy = y
-        
-        if direction == "up":
-            x -= 1
-        elif direction == "down":
-            x += 1
-        elif direction == "right":
-            y += 1
-        elif direction == "left":
-            y -= 1
-
-        if can_move(board, x, y):
-            print("movi")
-            board[x][y] = ROBOT
-            board[oldx][oldy] = CLEAN
-            return True
-            
-    else:
-        print("Direção inválida")
-        return False
-
-def new_robot_positon(robot: tuple[int, int], direction: tuple[int, int]) -> tuple[int, int]:
-    """
-    Cacula a nova posição do robo dado um movimento
-    """
-    return robot[0] + direction[0], robot[1] + direction[1]
-
-def make_move(board):
-    """
-    Realiza o movimento do robo para a primeira direção possível
-    """
-    robot = get_robot_position(board)
-
-    for direcion, position in MOVES.items():
-        
-        x, y =new_robot_positon(robot, position)
-
-        if can_move(board, x, y):
-            move(board, robot[0], robot[1], direcion)
-            return True
-
-def can_clean(board: list[list[int]], x:int, y:int) -> bool:
-    """
-    Calcula se as novas coordenadas (x, y) estão dentro dos limites do tabuleiro, não são obstáculos e não estão limpas.
-    """
-
-    item = board[x][y] 
+        valid_positions = generate_moves(board)
+        for option in valid_positions:
+            if position == option:
+                return True
 
 
-    if in_board(board, x,y) and item != OBSTACLE and item != ROBOT:
-        return True
     return False
 
-def clean(board: list[list[int]], x:int, y:int) -> None:
+def bfs(board: list[list[int]], start: tuple[int, int], goal: tuple[int, int]):
     """
-    Limpa a célula atual
+    Realiza uma busca em largura para encontrar o caminho do robô para o local que ele tem que ir
     """
-    board[x][y] = CLEAN
+    
+    valid_directions = [MOVES["up"], MOVES["down"], MOVES["left"], MOVES["right"]]  # cima, baixo, esquerda, direita
+    queue = deque([(start, [start])])  # fila de (posição atual, caminho até aqui)
+    local_visited = set([start])
 
-def is_clean(board: list[list[int]], x:int, y:int):
+    while queue:
+        current, path = queue.popleft()
+        if current == goal:
+            path.pop(0)
+            return path
+
+        for direction in valid_directions:
+            next_row, next_col = current[0] + direction[0], current[1] + direction[1]
+
+            if is_valid_position(board, (next_row, next_col)) and (next_row, next_col) not in local_visited:
+                local_visited.add((next_row, next_col))
+                queue.append(((next_row, next_col), path + [(next_row, next_col)]))
+
+    return []  # se não houver caminho
+
+
+
+def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board: Callable, visited: set ) -> list[list[int]]:
     """
-    Verifica se a célula atual está limpa
+    move the robot to the new position
     """
-    return board[x][y] == CLEAN
+    visited.add(new_position)
+    if is_valid_position(board, new_position):
+
+        x, y = new_position
+        robot_x, robot_y = get_robot(board)
+
+        if can_move(board, new_position):
+            board[robot_y][robot_x] = CLEAN
+            board[y][x] = ROBOT
+            show_board(board)
+        else:
+            path = bfs(board, (robot_x, robot_y), new_position)
+
+            for position in path:
+                robot_x, robot_y = get_robot(board)
+                x, y = position
+                board[robot_y][robot_x] = CLEAN
+                board[y][x] = ROBOT
+                show_board(board)
+   
+
+    return board
+
+def dfs(board: list[list[int]]):
+
+    visited = set([])
+
+    stack = [get_robot(board)]
+
+    while len(stack) > 0:
+        next = get_next_move(stack)
+        board = move_robot(board, next)
+        moves = generate_moves(board)
+        stack = stack_movies(stack, moves)
