@@ -151,8 +151,6 @@ def bfs(board: list[list[int]], start: tuple[int, int], goal: tuple[int, int]):
     """
     Realiza uma busca em largura para encontrar o caminho do robô para o local que ele tem que ir
     """
-
-    rows, cols = len(board), len(board[0])
     
     valid_directions = [directions["up"], directions["down"], directions["left"], directions["right"]]  # cima, baixo, esquerda, direita
     queue = deque([(start, [start])])  # fila de (posição atual, caminho até aqui)
@@ -165,24 +163,22 @@ def bfs(board: list[list[int]], start: tuple[int, int], goal: tuple[int, int]):
             return path
 
         for direction in valid_directions:
+            next_row, next_col = current[0] + direction[0], current[1] + direction[1]
 
-            next_row, next_col = current[1] + direction[1], current[0] + direction[0]
-
-            if 0 <= next_row < rows and 0 <= next_col < cols and (next_row, next_col) not in local_visited:
-
+            if is_valid_position(board, (next_row, next_col)) and (next_row, next_col) not in local_visited:
                 local_visited.add((next_row, next_col))
-
                 queue.append(((next_row, next_col), path + [(next_row, next_col)]))
 
     return []  # se não houver caminho
+
 
 def move_robot(board: list[list[int]], new_position: tuple[int,int] ) -> list[list[int]]:
     """
     move the robot to the new position
     """
-
+    global visited
+    visited.add(new_position)
     if is_valid_position(board, new_position):
-        global visited
 
         x, y = new_position
         robot_x, robot_y = get_robot(board)
@@ -201,7 +197,7 @@ def move_robot(board: list[list[int]], new_position: tuple[int,int] ) -> list[li
                 board[y][x] = ROBOT
                 show_board(board)
 
-        visited.add(new_position)
+        
 
                     
 
@@ -212,6 +208,6 @@ stack = [get_robot(board)]
 
 while len(stack) > 0:
     next = get_next_move(stack)
+    board = move_robot(board, next)
     moves = generate_moves(board)
     stack = stack_movies(stack, moves)
-    board = move_robot(board, next)
