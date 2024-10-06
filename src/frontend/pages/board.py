@@ -6,23 +6,20 @@ from typing import Literal
 from tkinter.messagebox import showinfo
 
 
-from src.backend.funcs.board import(
-    board_size,
-    generate_obstacles
-)
+from src.backend.funcs.board import generate_obstacles
 from src.backend.funcs.position import(
-    can_clean,
+    bfs,
     can_move,
-    dfs,
-    get_direction,
-    get_robot_position,
-    in_board,
-    move,
-    place_robot
+    generate_moves,
+    get_board_sizes,
+    get_next_move,
+    get_robot,
+    is_valid_position,
+    place_robot,
+    stack_movies
 )
 from src.backend.constants.main import(
     CLEAN,
-    MOVES,
     TRASH,
     OBSTACLE,
     ROBOT
@@ -32,7 +29,7 @@ from src.frontend.styles.frame import configs_central as configs
 
 def Board(app: CTk):
     matrix = app.matrix
-    x, y = board_size(matrix)
+    x, y = get_board_sizes(matrix)
 
     frame_width = configs["width"] // x
     frame_height = configs["height"] // y
@@ -93,61 +90,49 @@ def Robot(app):
 def Start(app: CTk, time_limit: int):
 
     app.time = time_limit
-    dfs(app.matrix, _refrash_board, app)
+    dfs(app.matrix, app)
+def move_robot(board: list[list[int]], new_position: tuple[int,int], visited: set, app: CTk) -> list[list[int]]:
+    """
+    move the robot to the new position
+    """
+    visited.add(new_position)
+    if is_valid_position(board, new_position):
 
+        x, y = new_position
+        robot_x, robot_y = get_robot(board)
 
-# def DFS(app: CTk):
-#     stack = [get_robot_position(app.matrix)]  # stacka e formato de Pilha com a posição inicial do robô e tudo que ele conhece até agora
-#     visited = set()  # Células visitadas
+        if can_move(board, new_position):
+            board[robot_y][robot_x] = CLEAN
+            board[y][x] = ROBOT
+            _refrash_board(app, board)
+        else:
+            path = bfs(board, (robot_x, robot_y), new_position)
 
-#     def next_move():
-#         print(f"Pilha: {stack}\nVisitados: {visited}")
-#         if len(stack) > 0:  # Checar se a pilha não está vazia
-#             cell_x, cell_y = stack.pop()  # Obter a próxima célula a ser visitada
+            for position in path:
+                robot_x, robot_y = get_robot(board)
+                x, y = position
+                board[robot_y][robot_x] = CLEAN
+                board[y][x] = ROBOT
+                _refrash_board(app, board)
+   
 
-#             if in_board(app.matrix, cell_x, cell_y):  # Checar se a célula está dentro do tabuleiro
+    return board
 
-#                 if (cell_x, cell_y) not in visited:  # Checar se a célula já foi visitada, caso não tenha sido, vamos visitá-la
-#                     visited.add((cell_x, cell_y))  # Adicionar a célula atual ao conjunto de visitados
+def dfs(board: list[list[int]], app: CTk = None):
+    visited = set([])
+    stack = [get_robot(board)]
 
-#                 if can_clean(app.matrix, cell_x, cell_y):
+    def next_step():
+        if len(stack) > 0:
+            next = get_next_move(stack)
+            move_robot(board, next, visited, app)
+            moves = generate_moves(board)
+            stack_movies(stack, moves, visited)
+            app.after(1000, next_step)  # Atraso de 1 segundo antes do próximo movimento
+        else:
+            showinfo("Fim", "Limpeza Finalizada")
 
-#                     x, y = get_robot_position(app.matrix)
-#                     direction = get_direction((x, y), cell_x, cell_y)
-#                     print(direction)
-#                     if move(app.matrix, x, y, direction):
-#                         print(f"Linha 119: {app.matrix}")
-                        
-#                     _refrash_board(app, app.matrix)
-#                 else:
-#                     print(f"Já foi Visitada: X:{cell_x}, Y:{cell_y}")
-                
-
-#             else:
-#                 print(f"Fora do Tabuleiro: X: {cell_x}, Y: {cell_y}")
-
-
-#             for direction_x, direction_y in MOVES.values():  # Percorrer as direções possíveis
-
-#                 new_position_x, new_position_y = cell_x + direction_x, cell_y + direction_y
-
-#                 if in_board(app.matrix, new_position_x, new_position_y) and (new_position_x, new_position_y) not in visited:  # Se a direção for válida (Estiver dentro do tabuleiro)
-#                     if can_move(app.matrix, new_position_x, new_position_y):
-#                         stack.append((new_position_x, new_position_y))
-
-#             app.time -=1
-#             app.label_height.configure(text=f"Tempo Atual: {app.time}")
-
-#             if app.time < 0:
-#                 showinfo("Fim", "Tempo esgotado")
-#                 return
-#             app.after(1000, next_move)  # Atraso antes do próximo movimento
-
-#         else:
-#             print("Pilha vazia, finalizando a limpeza.")
-
-#     next_move()  # Iniciar o loop de movimentos
-#     print("Finalizei")
+    next_step()  # Iniciar o loop de movimentos
 
 
 
@@ -156,6 +141,7 @@ def _refrash_board(app: CTk, matrix: list[list[int]]):
         for column in range(len(matrix[0])):
             color = _choice_color(matrix[line][column])
             app.frames_in_board[line][column].configure(fg_color=color)
+    
 
 def _choice_color(value: int) -> Literal['white', 'black', 'red', 'green']:
 

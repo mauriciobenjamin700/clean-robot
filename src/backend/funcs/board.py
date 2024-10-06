@@ -39,8 +39,3 @@ def remove_obstacles(board:list[list]):
                 board[line][column] = TRASH
     
 
-def get_board_sizes(board: list[list[int]]) -> tuple[int,int]:
-    """
-    return x, y
-    """
-    return (len(board[0]), len(board))

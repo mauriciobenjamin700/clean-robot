@@ -10,7 +10,6 @@ from collections import deque
 from typing import Callable, Literal
 
 
-from src.backend.funcs.board import get_board_sizes
 from src.backend.constants.main import (
     OBSTACLE,
     ROBOT,
@@ -32,6 +31,12 @@ def generate_position(board:list[list]) -> tuple[int, int]:
     y = gerenate_random_number(0, height - 1)
     
     return x, y
+
+def get_board_sizes(board: list[list[int]]) -> tuple[int,int]:
+    """
+    return x, y
+    """
+    return (len(board[0]), len(board))
 
 
 def in_board(board: list[list[int]], position: tuple[int,int]) -> bool:
@@ -102,7 +107,7 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
     
     result = True
     
-    if not in_board(board, x,y): # Checando se a posição é válida
+    if not in_board(board, (x,y)): # Checando se a posição é válida
         result = False
     
     elif board[x][y] == OBSTACLE:
@@ -222,43 +227,3 @@ def bfs(board: list[list[int]], start: tuple[int, int], goal: tuple[int, int]):
 
     return []  # se não houver caminho
 
-
-
-def move_robot(board: list[list[int]], new_position: tuple[int,int], show_board: Callable, visited: set, app = None ) -> list[list[int]]:
-    """
-    move the robot to the new position
-    """
-    visited.add(new_position)
-    if is_valid_position(board, new_position):
-
-        x, y = new_position
-        robot_x, robot_y = get_robot(board)
-
-        if can_move(board, new_position):
-            board[robot_y][robot_x] = CLEAN
-            board[y][x] = ROBOT
-            show_board(app, board)
-        else:
-            path = bfs(board, (robot_x, robot_y), new_position)
-
-            for position in path:
-                robot_x, robot_y = get_robot(board)
-                x, y = position
-                board[robot_y][robot_x] = CLEAN
-                board[y][x] = ROBOT
-                show_board(app, board)
-   
-
-    return board
-
-def dfs(board: list[list[int]], show_board: Callable, app = None):
-
-    visited = set([])
-
-    stack = [get_robot(board)]
-
-    while len(stack) > 0:
-        next = get_next_move(stack)
-        board = move_robot(board, next, show_board, visited, app)
-        moves = generate_moves(board)
-        stack = stack_movies(stack, moves, visited)
