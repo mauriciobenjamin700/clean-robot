@@ -1,8 +1,6 @@
-from customtkinter import CTkFrame, CTkLabel, CTkImage
-from PIL import Image, ImageTk
-from tkinter import PhotoImage
+from customtkinter import CTkFrame, CTkLabel
 
-from src.frontend.styles.colors.page import SCREEN, WINDOW
+from frontend.styles.page import SCREEN, WINDOW
 from src.frontend.styles.configs.size import CENTRAL_FRAME_HEIGHT, CENTRAL_FRAME_WIDTH, INTERNAL_FRAME_HEIGHT, INTERNAL_FRAME_WIDTH
 from src.frontend.components.button import Button
 
@@ -31,8 +29,6 @@ def generate_chess_board(lines:int=8, columns=8):
 class ChessBoardFrame(CTkFrame):
     def __init__(self, master, board):
         super().__init__(master, width=INTERNAL_FRAME_WIDTH, height=INTERNAL_FRAME_HEIGHT, fg_color=SCREEN)
-        self.obstacle = Image.open("images/obstacle.png")
-        self.robot = Image.open("images/robot.png")
         self.list_of_labels = []
         self.create_board(board)
 

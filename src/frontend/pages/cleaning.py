@@ -7,7 +7,7 @@ from customtkinter import (
 from src.frontend.components.entry import Entry
 from src.frontend.components.label import Label
 from src.frontend.components.board import BorderFrame, generate_chess_board
-from src.frontend.styles.colors.page import SCREEN
+from frontend.styles.page import SCREEN
 
 
 from src.backend.funcs.position import (

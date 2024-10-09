@@ -1,7 +1,7 @@
 from customtkinter import CTkFrame
 
 
-from src.frontend.styles.colors.page import SCREEN, WINDOW
+from frontend.styles.page import SCREEN, WINDOW
 from src.frontend.styles.configs.size import(
     CENTRAL_FRAME_WIDTH,
     CENTRAL_FRAME_HEIGHT,
