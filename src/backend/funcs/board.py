@@ -1,8 +1,25 @@
-from src.backend.constants.main import TRASH
+from src.backend.constants.main import (
+    OBSTACLE,
+    TRASH
+)
 from src.backend.funcs.position import(
     generate_position,
     place
 )
+
+def show_board(board: list[list[int]]):
+    """
+    print the board
+    """
+    print("-"*30)
+    coluns, lines = len(board[0]), len(board)
+
+    for line in range(lines):
+        for column in range(coluns):
+            print(board[line][column], end=" ")
+
+        print("\n")
+
 
 
 def generate_board(lines:int, columns:int) -> list[list]:
@@ -11,13 +28,13 @@ def generate_board(lines:int, columns:int) -> list[list]:
     
     return board
 
-def generate_obstacles(board:list[list], num_blocks:int) -> None:
+def generate_obstacles(board:list[list], num_blocks:int) -> bool:
     
     width = len(board)
     height = len(board[0])
     
     if num_blocks > width * height:
-        raise ValueError("Número de obstáculos maior que o número de posições do tabuleiro")
+        return False
     
     for _ in range(0,num_blocks,1):
         
@@ -26,14 +43,13 @@ def generate_obstacles(board:list[list], num_blocks:int) -> None:
         while not place(board, x, y, 'obstacle'):
             x, y = generate_position(board)
 
-def board_size(board: list[list[int]]) -> tuple[int, int]:
-    """
-    Retorna uma tupla com a quantidade de linhas e colunas
+    return True
 
-    - Args:
-        - board: list[list[int]] -> Tabuleiro
+def remove_obstacles(board:list[list]):
     
-    - Return:
-        - tuple[int, int]: Tupla com a quantidade de linhas e colunas (X, Y)
-    """
-    return len(board), len(board[0])
+    for line in range(len(board)):
+        for column in range(len(board[0])):
+            if board[line][column] == OBSTACLE:
+                board[line][column] = TRASH
+    
+

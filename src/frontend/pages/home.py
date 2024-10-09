@@ -1,42 +1,79 @@
-# home_screen.py
-from customtkinter import CTkFrame, CTkLabel
+from customtkinter import (
+    CTk,
+    CTkFrame,
+    CTkLabel,
+    CTkButton,
+    CTkEntry
+)
 
 
-
-from src.frontend.components.div import CentralFrame
+from src.frontend.styles.frame import (
+    configs_central as configs,
+    configs_right,
+    configs_botton
+)
+from src.frontend.configs.position import (
+    align_botton,
+    align_center,
+    align_right
+)
+from src.frontend.components.button import Button
+from src.frontend.components.label import Label
 from src.frontend.components.entry import Entry
-from src.frontend.styles.colors.label import TEXT, TEXT_STYLE
-from src.frontend.styles.colors.page import SCREEN
+from src.frontend.components.frame import BottonFrame, RightFrame
+
+def HomePage(app: CTk):
+
+    app.update_idletasks()
+
+    frame = CTkFrame(app, **configs)
+    x,y = align_center(app.winfo_width(), app.winfo_height(), configs["width"], configs["height"])
+    frame.place(x=x, y=0)
 
 
-class HomeScreen(CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.configure(fg_color=SCREEN)
+    right_menu = RightFrame(app)
+    #right_menu.configure(fg_color="red")
+    
+    right_x, right_y = align_right(app.winfo_width(), app.winfo_height(),configs_right["width"], configs_right["height"])
 
-        self.central_frame = CentralFrame(self, "Sair", "Gerar Tabuleiro")
-        self.central_frame.pack()
-        
-        self.entry_frame = CTkFrame(self, fg_color=SCREEN)
-        self.entry_frame.pack(side="right", anchor="e", padx=10, pady=10)
+    right_menu.place(x=right_x-15, y=right_y)
+    
+    label_width = Label(right_menu, text="Largura")
+    label_width.pack(fill=None, padx=10, pady=5)
 
-        self.label_WIDTH = CTkLabel(self.entry_frame,text="Linhas", fg_color=SCREEN, text_color=TEXT, font=TEXT_STYLE)
-        self.label_WIDTH.pack(padx=10, pady=5)
-        
-        self.entry_WIDTH = Entry(self.entry_frame, placeholder_text="Digite aqui")
-        self.entry_WIDTH.pack(padx=10, pady=5)
+    entry_width = Entry(right_menu)
+    entry_width.pack(fill=None, padx=10, pady=5)
 
-        self.label_HEIGHT = CTkLabel(self.entry_frame,text="Colunas", fg_color=SCREEN, text_color=TEXT, font=TEXT_STYLE)
-        self.label_HEIGHT.pack(padx=10, pady=5)
+    label_height = Label(right_menu, text="Altura")
+    label_height.pack(fill=None, padx=10, pady=5)
 
-        self.entry_HEIGHT = Entry(self.entry_frame, placeholder_text="Digite aqui")
-        self.entry_HEIGHT.pack(padx=10, pady=5)
+    entry_height = Entry(right_menu)
+    entry_height.pack(fill=None, padx=10, pady=5)
 
-        self.bind("<Button-1>", self.on_click)
+    buttons = BottonFrame(app)
+    buttons_x, buttons_y = align_botton(app.winfo_width(), app.winfo_height(),configs_botton["width"], configs_botton["height"])
 
-    def on_click(self, event):
-        if event.widget == self:
-            self.focus_set()
+    buttons.place(x=buttons_x, y=buttons_y-20)
+    #buttons.configure(fg_color="red")
 
+    button_left = Button(buttons, text="Cancelar")
+    button_left.pack(side="left", padx=10, pady=5)
+
+    button_right = Button(buttons, text="Gerar Tabuleiro")
+    button_right.pack(side="right", padx=10, pady=5)
+
+    app.main_frame = frame
+
+    app.right_menu = right_menu
+
+    app.label_width = label_width
+    app.entry_width = entry_width
+    
+    app.label_height = label_height
+    app.entry_height = entry_height
+
+    app.buttons = buttons
+
+    app.button_left = button_left
+    app.button_right = button_right
 
