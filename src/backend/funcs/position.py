@@ -110,14 +110,14 @@ def place(board:list[list], x:int, y:int, type: Literal["obstacle", "robot"]) ->
     if not in_board(board, (x,y)): # Checando se a posição é válida
         result = False
     
-    elif board[x][y] == OBSTACLE:
+    elif board[y][x] == OBSTACLE:
         result = False
         
     else:
         if type == "robot":
-            board[x][y] = ROBOT
+            board[y][x] = ROBOT
         elif type == "obstacle":
-            board[x][y] = OBSTACLE
+            board[y][x] = OBSTACLE
         else:
             raise ValueError("Tipo inválido")
     return result
