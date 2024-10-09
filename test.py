@@ -189,7 +189,7 @@ def move_robot(board: list[list[int]], new_position: tuple[int,int] ) -> list[li
             show_board(board)
         else:
             path = bfs(board, (robot_x, robot_y), new_position)
-
+            print(f"Teleportei indo de {robot_x, robot_y} para {new_position} via {path}")
             for position in path:
                 robot_x, robot_y = get_robot(board)
                 x, y = position

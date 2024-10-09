@@ -7,6 +7,20 @@ from src.backend.funcs.position import(
     place
 )
 
+def show_board(board: list[list[int]]):
+    """
+    print the board
+    """
+    print("-"*30)
+    coluns, lines = len(board[0]), len(board)
+
+    for line in range(lines):
+        for column in range(coluns):
+            print(board[line][column], end=" ")
+
+        print("\n")
+
+
 
 def generate_board(lines:int, columns:int) -> list[list]:
     

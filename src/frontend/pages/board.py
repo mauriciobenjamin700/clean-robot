@@ -6,7 +6,7 @@ from typing import Literal
 from tkinter.messagebox import showinfo
 
 
-from src.backend.funcs.board import generate_obstacles
+from src.backend.funcs.board import generate_obstacles, show_board
 from src.backend.funcs.position import(
     bfs,
     can_move,
@@ -77,7 +77,7 @@ def Robot(app):
     if place_robot(app.matrix):
         _refrash_board(app, app.matrix)
         app.button_right.configure(text="Iniciar Limpeza")
-        app.label_width.configure(text="Tempo Limite")
+        app.label_width.configure(text="Tempo Limite (sec)")
         app.label_width.pack()
         app.entry_width.delete(0, "end")
         app.entry_width.insert(0, '0')
@@ -104,16 +104,18 @@ def move_robot(board: list[list[int]], new_position: tuple[int,int], visited: se
         if can_move(board, new_position):
             board[robot_y][robot_x] = CLEAN
             board[y][x] = ROBOT
+            show_board(board)
             _refrash_board(app, board)
         else:
             path = bfs(board, (robot_x, robot_y), new_position)
-
+            print(f"Teleportei indo de {robot_x, robot_y} para {new_position} via {path}")
             for position in path:
                 robot_x, robot_y = get_robot(board)
                 x, y = position
                 board[robot_y][robot_x] = CLEAN
                 board[y][x] = ROBOT
-                _refrash_board(app, board)
+                show_board(board)
+                app.after(1000, lambda: _refrash_board(app, board))
    
 
     return board
@@ -122,12 +124,16 @@ def dfs(board: list[list[int]], app: CTk = None):
     visited = set([])
     stack = [get_robot(board)]
 
+    app.current = 0
+
     def next_step():
-        if len(stack) > 0:
+        if len(stack) > 0 and app.current < app.time:
             next = get_next_move(stack)
             move_robot(board, next, visited, app)
             moves = generate_moves(board)
             stack_movies(stack, moves, visited)
+            app.current += 1
+            app.label_height.configure(text=f"Tempo Atual: {app.current}")
             app.after(1000, next_step)  # Atraso de 1 segundo antes do próximo movimento
         else:
             showinfo("Fim", "Limpeza Finalizada")
